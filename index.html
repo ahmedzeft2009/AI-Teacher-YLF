@@ -89,6 +89,64 @@ button,select,textarea{font-family:var(--font)}
 .pill-icon{font-size:.88rem}
 .simple-toggle{display:inline-flex;align-items:center;gap:5px;margin-right:auto;flex-shrink:0;padding:7px 11px;background:rgba(212,112,72,.08);border:1.5px solid rgba(212,112,72,.3);color:var(--terra-l);border-radius:var(--r-pill);font-size:.78rem;font-weight:700;cursor:pointer;transition:var(--ts);min-height:38px}
 .simple-toggle:hover,.simple-toggle.active{background:rgba(212,112,72,.15);border-color:var(--terra-m);box-shadow:var(--sh-terra);transform:translateY(-1px)}
+
+/* ══════════ AUTH ══════════ */
+.auth-btn{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;padding:7px 12px;background:rgba(0,168,168,.08);border:1.5px solid var(--br);color:var(--txt-2);border-radius:var(--r-pill);font-size:.78rem;font-weight:700;cursor:pointer;transition:var(--ts);min-height:38px}
+.auth-btn:hover{border-color:var(--br-hi);color:var(--txt-1)}
+.auth-btn.hidden{display:none}
+.auth-user-chip{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;padding:6px 6px 6px 12px;background:rgba(0,168,168,.1);border:1.5px solid var(--br-hi);border-radius:var(--r-pill);min-height:38px}
+.auth-user-chip.hidden{display:none}
+.auth-user-name{font-size:.76rem;font-weight:800;color:var(--teal-l);white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.auth-logout-btn{width:26px;height:26px;border-radius:50%;border:none;background:rgba(212,112,72,.15);color:var(--terra-l);cursor:pointer;font-size:.72rem;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.auth-logout-btn:hover{background:rgba(212,112,72,.3);transform:scale(1.08)}
+
+.auth-overlay{position:fixed;inset:0;background:rgba(7,16,16,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;animation:ovin .25s var(--ease) both}
+.auth-overlay.hidden{display:none}
+.auth-card{position:relative;background:var(--bg2);border:1.5px solid var(--br-hi);border-radius:var(--r-xl);padding:26px 22px 22px;max-width:380px;width:100%;box-shadow:var(--sh-h);animation:cin .35s var(--spring) both}
+.auth-close{position:absolute;top:14px;left:14px;width:30px;height:30px;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--txt-3);border-radius:8px;cursor:pointer;font-size:.8rem;transition:var(--t)}
+.auth-close:hover{color:var(--txt-1);border-color:var(--br-hi)}
+.auth-tabs{display:flex;gap:8px;margin-bottom:20px;padding-left:36px}
+.auth-tab{flex:1;padding:10px;background:rgba(0,168,168,.04);border:1.5px solid var(--br);border-radius:var(--r-lg);color:var(--txt-3);font-size:.8rem;font-weight:800;cursor:pointer;transition:var(--t)}
+.auth-tab.active{background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border-color:transparent;color:#fff}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth-form.hidden{display:none}
+.auth-form input.planner-date-input{text-align:right}
+.auth-error{font-size:.78rem;color:#E88;background:rgba(214,80,80,.1);border:1px solid rgba(214,80,80,.35);border-radius:var(--r-md);padding:9px 12px;text-align:center}
+.auth-error.hidden{display:none}
+
+/* ══════════ VOICE CHAT ══════════ */
+.voice-overlay{position:fixed;inset:0;background:rgba(7,16,16,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
+.voice-overlay.hidden{display:none}
+.voice-card{background:var(--bg2);border:1.5px solid var(--br-hi);border-radius:var(--r-xl);width:100%;max-width:420px;height:min(600px,88vh);display:flex;flex-direction:column;box-shadow:var(--sh-h);animation:cin .35s var(--spring) both;overflow:hidden}
+.voice-header{display:flex;align-items:center;gap:8px;padding:14px 14px 12px;border-bottom:1px solid var(--br);flex-shrink:0}
+.voice-header-title{font-size:.9rem;font-weight:900;color:var(--txt-1);flex-shrink:0}
+.voice-lang-toggle{display:flex;gap:4px;margin-right:auto;background:rgba(0,168,168,.06);border-radius:var(--r-pill);padding:3px}
+.voice-lang-btn{padding:5px 10px;border:none;background:transparent;color:var(--txt-3);font-size:.7rem;font-weight:700;border-radius:var(--r-pill);cursor:pointer;transition:var(--t)}
+.voice-lang-btn.active{background:linear-gradient(135deg,var(--teal-d),var(--teal-m));color:#fff}
+.voice-close{width:28px;height:28px;flex-shrink:0;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--txt-3);border-radius:8px;cursor:pointer;font-size:.78rem;transition:var(--t)}
+.voice-close:hover{color:var(--txt-1);border-color:var(--br-hi)}
+.voice-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+.voice-empty-hint{text-align:center;color:var(--txt-3);font-size:.85rem;margin:auto}
+.voice-bubble{max-width:82%;padding:10px 14px;border-radius:16px;font-size:.85rem;line-height:1.65;animation:vb-in .3s var(--ease) both}
+@keyframes vb-in{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+.voice-bubble.user{align-self:flex-start;background:linear-gradient(135deg,var(--teal-d),var(--teal-m));color:#fff;border-bottom-left-radius:5px}
+.voice-bubble.assistant{align-self:flex-end;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--txt-1);border-bottom-right-radius:5px}
+.voice-bubble.thinking{align-self:flex-end;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--txt-3);font-style:italic}
+.voice-controls{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 14px 20px;border-top:1px solid var(--br);flex-shrink:0}
+.voice-reset-btn,.voice-status{flex:1;text-align:center}
+.voice-reset-btn{background:none;border:none;color:var(--txt-3);font-size:1.1rem;cursor:pointer;padding:10px;transition:var(--t)}
+.voice-reset-btn:hover{color:var(--txt-1)}
+.voice-status{font-size:.72rem;color:var(--txt-3);font-weight:700}
+.voice-mic-btn{width:64px;height:64px;flex-shrink:0;border-radius:50%;background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--ts);box-shadow:var(--sh-teal)}
+.voice-mic-btn svg{width:26px;height:26px}
+.voice-mic-btn:hover{transform:scale(1.05)}
+.voice-mic-btn.listening{background:linear-gradient(135deg,#c0392b,#e74c3c);animation:mic-pulse-voice 1.4s ease-in-out infinite}
+@keyframes mic-pulse-voice{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.5)}50%{box-shadow:0 0 0 14px rgba(231,76,60,0)}}
+.voice-mic-btn.thinking{background:linear-gradient(135deg,#555,#777);cursor:not-allowed;animation:mic-think 1s linear infinite}
+@keyframes mic-think{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+.voice-mic-btn.speaking{background:linear-gradient(135deg,var(--terra-d),var(--terra-m));animation:mic-pulse-voice2 1.2s ease-in-out infinite}
+@keyframes mic-pulse-voice2{0%,100%{box-shadow:0 0 0 0 rgba(212,112,72,.5)}50%{box-shadow:0 0 0 14px rgba(212,112,72,0)}}
+.voice-mic-btn:disabled{opacity:.4;cursor:not-allowed}
 .simple-label{display:none}
 @media(min-width:480px){.simple-label{display:inline}}
  
@@ -113,7 +171,29 @@ button,select,textarea{font-family:var(--font)}
 .stat-num{font-size:1.5rem;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--teal-m),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .stat-lbl{font-size:.65rem;color:var(--txt-3);font-weight:600}
 .stat-divider{width:1px;height:28px;background:var(--br)}
- 
+
+/* ══════════ STREAK WIDGET ══════════ */
+.streak-widget{display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1.5px solid var(--br);border-radius:var(--r-xl);padding:14px 16px;margin-bottom:14px;backdrop-filter:blur(16px);box-shadow:var(--sh);transition:var(--ts)}
+.streak-flame{font-size:1.9rem;line-height:1;filter:grayscale(.7) opacity(.6);transition:var(--ts)}
+.streak-widget.active .streak-flame{filter:none;animation:flameflick 1.6s ease-in-out infinite}
+@keyframes flameflick{0%,100%{transform:scale(1) rotate(0deg)}25%{transform:scale(1.08) rotate(-3deg)}50%{transform:scale(1.03) rotate(2deg)}75%{transform:scale(1.1) rotate(-1deg)}}
+.streak-info{flex:1;min-width:0}
+.streak-count{font-size:1.05rem;font-weight:900;color:var(--txt-1)}
+.streak-sub{font-size:.72rem;color:var(--txt-3);font-weight:600;margin-top:1px}
+.streak-today{font-size:.7rem;font-weight:700;color:var(--terra-l);background:rgba(212,112,72,.1);border:1px solid rgba(212,112,72,.3);border-radius:var(--r-pill);padding:5px 10px;white-space:nowrap;flex-shrink:0}
+.streak-widget.active .streak-today{color:var(--teal-l);background:rgba(0,168,168,.12);border-color:var(--br-hi)}
+.streak-widget.milestone{animation:streakcelebrate .6s var(--spring)}
+@keyframes streakcelebrate{0%{transform:scale(1)}30%{transform:scale(1.04)}60%{transform:scale(.99)}100%{transform:scale(1)}}
+@media(max-width:380px){.streak-today{display:none}}
+
+.voice-entry-btn{display:flex;align-items:center;gap:12px;width:100%;background:linear-gradient(135deg,rgba(0,168,168,.1),rgba(212,112,72,.08));border:1.5px solid var(--br-hi);border-radius:var(--r-xl);padding:14px 16px;margin-bottom:14px;cursor:pointer;transition:var(--ts);text-align:right}
+.voice-entry-btn:hover{transform:translateY(-2px);box-shadow:var(--sh-teal)}
+.voice-entry-icon{font-size:1.6rem;flex-shrink:0}
+.voice-entry-text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.voice-entry-title{font-size:.92rem;font-weight:900;color:var(--txt-1)}
+.voice-entry-sub{font-size:.72rem;color:var(--txt-3);font-weight:600}
+.voice-entry-arrow{font-size:1.3rem;color:var(--teal-l);flex-shrink:0}
+
 /* ══════════ CARDS ══════════ */
 .card{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r-xl);padding:var(--cp);margin-bottom:14px;position:relative;overflow:hidden;transition:var(--t);box-shadow:var(--sh);backdrop-filter:blur(16px);animation:cin .5s var(--spring) both}
 @keyframes cin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -152,29 +232,250 @@ button,select,textarea{font-family:var(--font)}
 @keyframes recpulse{0%,100%{box-shadow:0 0 0 0 rgba(212,112,72,.4)}50%{box-shadow:0 0 0 8px rgba(212,112,72,0)}}
 .char-count{text-align:left;font-size:.71rem;color:var(--txt-3);margin-top:5px;padding-left:4px}
 .char-count.warn{color:var(--terra-l)}
- 
+
+/* ══════════ IMAGE ATTACH / PREVIEW / SCORE CHIP ══════════ */
+.image-attach-prompt{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:12px 14px;background:rgba(0,168,168,.05);border:1.5px dashed var(--br-hi);border-radius:var(--r-lg);color:var(--txt-2);cursor:pointer;font-size:.83rem;font-weight:700;transition:var(--t)}
+.image-attach-prompt .iap-icon{font-size:1.05rem}
+.image-attach-prompt:hover{border-color:var(--teal-m);background:rgba(0,168,168,.1);color:var(--txt-1);transform:translateY(-1px)}
+.image-attach-prompt.hidden{display:none}
+.image-preview{position:relative;display:flex;align-items:center;gap:10px;margin-top:10px;padding:8px 10px;background:rgba(0,168,168,.06);border:1px solid var(--br);border-radius:var(--r-lg)}
+.image-preview img{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--br);flex-shrink:0}
+.image-preview-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.image-preview-label{font-size:.8rem;font-weight:700;color:var(--txt-1)}
+.image-preview-hint{font-size:.7rem;color:var(--txt-3)}
+.image-remove-btn{width:26px;height:26px;flex-shrink:0;border-radius:50%;border:1px solid var(--br);background:rgba(212,112,72,.1);color:var(--terra-l);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.78rem;transition:var(--t)}
+.image-remove-btn:hover{background:rgba(212,112,72,.2);transform:scale(1.08)}
+.score-chip{display:flex;align-items:center;gap:12px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r-lg);border:1px solid}
+.score-chip-num{font-size:1.4rem;font-weight:900;line-height:1}
+.score-chip-label{font-size:.8rem;font-weight:700}
+.score-chip.score-good{background:rgba(0,168,168,.1);border-color:var(--br-hi);color:var(--teal-l)}
+.score-chip.score-mid{background:rgba(212,112,72,.1);border-color:rgba(212,112,72,.4);color:var(--terra-l)}
+.score-chip.score-low{background:rgba(214,80,80,.1);border-color:rgba(214,80,80,.4);color:#E88}
+
 /* ══════════ ACTION BUTTONS ══════════ */
-.action-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.action-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
 .action-btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px 8px;border:1.5px solid var(--br);border-radius:var(--r-lg);background:rgba(0,168,168,.04);color:var(--txt-1);cursor:pointer;overflow:hidden;transition:var(--ts);text-align:center;min-height:78px}
 .btn-glow{position:absolute;inset:0;opacity:0;transition:opacity .25s;border-radius:inherit;pointer-events:none}
 .btn-explain .btn-glow{background:radial-gradient(ellipse at 50% 0%,rgba(0,168,168,.18),transparent 70%)}
 .btn-summarize .btn-glow{background:radial-gradient(ellipse at 50% 0%,rgba(212,112,72,.16),transparent 70%)}
 .btn-questions .btn-glow{background:radial-gradient(ellipse at 50% 0%,rgba(138,71,39,.18),transparent 70%)}
+.btn-homework .btn-glow{background:radial-gradient(ellipse at 50% 0%,rgba(34,150,90,.2),transparent 70%)}
+.btn-quiz .btn-glow{background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,.2),transparent 70%)}
+.action-buttons .btn-quiz{grid-column:1/-1}
 .action-btn:hover .btn-glow{opacity:1}
 .btn-icon-wrap{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:var(--ts);position:relative;z-index:1}
 .btn-explain .btn-icon-wrap{background:rgba(0,168,168,.14);border:1px solid rgba(0,168,168,.24)}
 .btn-summarize .btn-icon-wrap{background:rgba(212,112,72,.14);border:1px solid rgba(212,112,72,.24)}
 .btn-questions .btn-icon-wrap{background:rgba(138,71,39,.14);border:1px solid rgba(138,71,39,.28)}
+.btn-homework .btn-icon-wrap{background:rgba(34,150,90,.16);border:1px solid rgba(34,150,90,.3)}
+.btn-quiz .btn-icon-wrap{background:rgba(99,102,241,.16);border:1px solid rgba(99,102,241,.3)}
 .action-btn:hover .btn-icon-wrap{transform:scale(1.12) translateY(-2px)}
 .btn-text{font-size:.8rem;font-weight:800;color:var(--txt-1);z-index:1;position:relative}
 .btn-hint{font-size:.63rem;color:var(--txt-3);z-index:1;position:relative}
 .btn-explain:hover{border-color:var(--teal-m);box-shadow:var(--sh-teal);transform:translateY(-3px)}
 .btn-summarize:hover{border-color:var(--terra-m);box-shadow:var(--sh-terra);transform:translateY(-3px)}
 .btn-questions:hover{border-color:var(--terra-d);box-shadow:0 4px 16px rgba(138,71,39,.3);transform:translateY(-3px)}
+.btn-homework:hover{border-color:#22965A;box-shadow:0 4px 16px rgba(34,150,90,.3);transform:translateY(-3px)}
+.btn-quiz:hover{border-color:#6366F1;box-shadow:0 4px 16px rgba(99,102,241,.3);transform:translateY(-3px)}
 .btn-explain.active-btn{background:rgba(0,168,168,.18);border-color:var(--teal-m);box-shadow:var(--sh-teal)}
 .btn-summarize.active-btn{background:rgba(212,112,72,.18);border-color:var(--terra-m);box-shadow:var(--sh-terra)}
 .btn-questions.active-btn{background:rgba(138,71,39,.18);border-color:var(--terra-d);box-shadow:0 4px 16px rgba(138,71,39,.3)}
- 
+.btn-homework.active-btn{background:rgba(34,150,90,.2);border-color:#22965A;box-shadow:0 4px 16px rgba(34,150,90,.3)}
+.btn-quiz.active-btn{background:rgba(99,102,241,.22);border-color:#6366F1;box-shadow:0 4px 16px rgba(99,102,241,.3)}
+
+/* ══════════ STUDY PLANNER ══════════ */
+.planner-field{margin-bottom:18px}
+.planner-field:last-of-type{margin-bottom:0}
+.planner-label{display:block;font-size:.82rem;font-weight:800;color:var(--txt-1);margin-bottom:9px}
+.day-pills{display:flex;flex-wrap:wrap;gap:8px}
+.day-pill{padding:8px 14px;border:1.5px solid var(--br);border-radius:var(--r-pill);background:rgba(0,168,168,.04);color:var(--txt-2);font-size:.78rem;font-weight:700;cursor:pointer;transition:var(--t);white-space:nowrap}
+.day-pill:hover{border-color:var(--br-hi);color:var(--txt-1)}
+.day-pill.active{background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border-color:transparent;color:#fff;box-shadow:var(--sh-teal)}
+.goal-pill.active{background:linear-gradient(135deg,var(--terra-d),var(--terra-m));box-shadow:var(--sh-terra)}
+.planner-date-input{width:100%;padding:12px 16px;background:rgba(0,168,168,.05);border:1.5px solid var(--br);border-radius:var(--r-lg);color:var(--txt-1);font-family:var(--font);font-size:.88rem;outline:none;transition:var(--t)}
+.planner-date-input:focus{border-color:var(--teal-m);box-shadow:var(--sh-f)}
+.planner-generate-btn{display:block;width:100%;margin-top:22px;padding:15px;background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border:none;border-radius:var(--r-lg);color:#fff;font-size:.94rem;font-weight:800;cursor:pointer;transition:var(--ts);box-shadow:var(--sh-teal)}
+.planner-generate-btn:hover{transform:translateY(-2px)}
+.planner-generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.planner-hint{text-align:center;font-size:.72rem;color:var(--txt-3);margin-top:9px}
+.planner-result-card .card-header{position:relative}
+.planner-regenerate-btn{margin-right:auto;padding:7px 13px;background:rgba(0,168,168,.08);border:1.5px solid var(--br);border-radius:var(--r-pill);color:var(--txt-2);font-size:.72rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.planner-regenerate-btn:hover{border-color:var(--br-hi);color:var(--teal-l)}
+.planner-summary{font-size:.88rem;color:var(--txt-2);line-height:1.8;padding:12px 14px;background:rgba(0,168,168,.06);border:1px solid var(--br);border-radius:var(--r-lg);margin-bottom:16px}
+.planner-week-grid{display:flex;flex-direction:column;gap:10px}
+.day-plan-card{border:1px solid var(--br);border-radius:var(--r-lg);padding:12px 14px;background:rgba(255,255,255,.02)}
+.day-plan-title{font-size:.86rem;font-weight:800;color:var(--teal-l);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.day-plan-block{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-top:1px dashed var(--br)}
+.day-plan-block:first-of-type{border-top:none}
+.block-time{flex-shrink:0;font-size:.68rem;font-weight:800;color:var(--txt-3);min-width:78px;padding-top:2px}
+.block-body{flex:1;min-width:0}
+.block-subject{font-size:.82rem;font-weight:800;color:var(--txt-1)}
+.block-task{font-size:.76rem;color:var(--txt-2);margin-top:1px}
+.day-plan-empty{font-size:.78rem;color:var(--txt-3);font-style:italic}
+.planner-tips{margin-top:16px;padding-top:14px;border-top:1px solid var(--br)}
+.planner-tips-title{font-size:.8rem;font-weight:800;color:var(--terra-l);margin-bottom:8px}
+.planner-tip{font-size:.8rem;color:var(--txt-2);padding:5px 0 5px 0;display:flex;gap:8px;line-height:1.6}
+.planner-tip::before{content:'💡';flex-shrink:0}
+
+/* ══════════ STUDENT DASHBOARD ══════════ */
+.dashboard-login-cta{text-align:center;padding:38px 24px}
+.dlc-icon{font-size:2.6rem;margin-bottom:14px}
+.dlc-title{font-size:1.05rem;font-weight:900;color:var(--txt-1);margin-bottom:8px}
+.dlc-desc{font-size:.85rem;color:var(--txt-2);line-height:1.7;margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto}
+.dlc-btn{max-width:280px;margin:0 auto}
+.dashboard-content.hidden,.dashboard-login-cta.hidden{display:none}
+.dashboard-welcome{font-size:1rem;font-weight:800;color:var(--txt-1);margin-bottom:16px}
+.dashboard-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.dstat-card{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r-lg);padding:14px 8px;text-align:center}
+.dstat-icon{font-size:1.3rem;margin-bottom:4px}
+.dstat-num{font-size:1.2rem;font-weight:900;color:var(--txt-1)}
+.dstat-label{font-size:.65rem;color:var(--txt-3);font-weight:700;margin-top:2px}
+.dashboard-section-card{margin-top:14px}
+.dash-plan-preview{font-size:.82rem;color:var(--txt-2);line-height:1.7}
+.dash-plan-empty,.dash-activity-empty{font-size:.82rem;color:var(--txt-3);text-align:center;padding:18px 0}
+.dash-activity-list{display:flex;flex-direction:column;gap:2px}
+.dash-activity-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--br)}
+.dash-activity-item:first-child{border-top:none}
+.dash-activity-icon{width:32px;height:32px;flex-shrink:0;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;background:rgba(0,168,168,.1)}
+.dash-activity-body{flex:1;min-width:0}
+.dash-activity-snippet{font-size:.8rem;color:var(--txt-1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-activity-time{font-size:.68rem;color:var(--txt-3);margin-top:1px}
+@media(max-width:480px){.dashboard-stats-grid{grid-template-columns:repeat(2,1fr)}}
+
+.school-people-list{display:flex;flex-direction:column}
+.school-person-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--br)}
+.school-person-row:first-child{border-top:none}
+.school-person-avatar{width:34px;height:34px;flex-shrink:0;border-radius:50%;background:rgba(0,168,168,.12);display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:900;color:var(--teal-l)}
+.school-person-body{flex:1;min-width:0}
+.school-person-name{font-size:.83rem;font-weight:800;color:var(--txt-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.school-person-sub{font-size:.7rem;color:var(--txt-3);margin-top:1px}
+.school-person-streak{flex-shrink:0;font-size:.74rem;font-weight:800;color:var(--terra-l);background:rgba(212,112,72,.1);border:1px solid rgba(212,112,72,.3);border-radius:var(--r-pill);padding:4px 10px;white-space:nowrap}
+.school-person-streak.inactive{color:var(--txt-3);background:rgba(255,255,255,.03);border-color:var(--br)}
+.school-list-empty{font-size:.8rem;color:var(--txt-3);text-align:center;padding:16px 0}
+
+.teacher-attention-hint{font-size:.74rem;color:var(--txt-3);margin:-8px 0 10px}
+.teacher-grade-filter-wrap{margin-right:auto;width:auto;min-width:110px}
+.teacher-grade-filter-wrap .selector{padding:6px 26px 6px 10px;font-size:.74rem;min-height:32px}
+
+/* ══════════ PARENT DASHBOARD ══════════ */
+.parent-add-hint{font-size:.76rem;color:var(--txt-3);margin:-6px 0 12px;line-height:1.6}
+.parent-add-row{display:flex;gap:8px;flex-wrap:wrap}
+.parent-add-row input{flex:1;min-width:180px}
+.parent-add-btn{width:auto;flex-shrink:0;margin-top:0;padding:12px 20px}
+.request-actions{display:flex;gap:6px;flex-shrink:0}
+.request-approve-btn,.request-reject-btn{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.request-approve-btn{background:rgba(16,185,129,.15);color:#4FD095}
+.request-approve-btn:hover{background:rgba(16,185,129,.3);transform:scale(1.08)}
+.request-reject-btn{background:rgba(239,68,68,.1);color:#ef4444}
+.request-reject-btn:hover{background:rgba(239,68,68,.2);transform:scale(1.08)}
+.parent-child-card{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r-xl);padding:16px;margin-bottom:12px}
+.parent-child-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.parent-child-name{font-size:.92rem;font-weight:900;color:var(--txt-1)}
+.parent-child-grade{font-size:.72rem;color:var(--txt-3);margin-top:1px}
+.parent-child-stats{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.parent-child-stat-chip{background:rgba(0,168,168,.08);border:1px solid var(--br);border-radius:var(--r-pill);padding:5px 11px;font-size:.71rem;font-weight:700;color:var(--txt-2);white-space:nowrap}
+.parent-child-plan{font-size:.78rem;color:var(--txt-2);margin-bottom:10px;padding:9px 11px;background:rgba(0,168,168,.05);border-radius:var(--r-md);line-height:1.6}
+.parent-child-activity-title{font-size:.72rem;font-weight:800;color:var(--txt-3);margin-bottom:6px}
+.parent-child-activity-item{font-size:.76rem;color:var(--txt-2);padding:5px 0;border-top:1px dashed var(--br)}
+.parent-child-activity-item:first-child{border-top:none}
+
+/* ══════════ MINISTRY DASHBOARD ══════════ */
+.ministry-grade-chart{display:flex;flex-direction:column;gap:9px}
+.ministry-grade-row{display:flex;align-items:center;gap:10px}
+.ministry-grade-label{font-size:.74rem;font-weight:700;color:var(--txt-2);width:76px;flex-shrink:0}
+.ministry-grade-bar-wrap{flex:1;height:16px;background:rgba(255,255,255,.04);border-radius:var(--r-pill);overflow:hidden}
+.ministry-grade-bar{height:100%;background:linear-gradient(90deg,var(--teal-d),var(--teal-m));border-radius:var(--r-pill);transition:width .6s var(--ease);min-width:3px}
+.ministry-grade-count{font-size:.72rem;font-weight:800;color:var(--txt-3);width:26px;text-align:left;flex-shrink:0}
+.ministry-schools-table{display:flex;flex-direction:column}
+.ministry-school-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--br);flex-wrap:wrap}
+.ministry-school-row:first-child{border-top:none}
+.ministry-school-name{flex:1;min-width:100px;font-size:.83rem;font-weight:800;color:var(--txt-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ministry-school-stats{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.ministry-school-chip{font-size:.68rem;font-weight:700;color:var(--txt-3);background:rgba(0,168,168,.06);border:1px solid var(--br);border-radius:var(--r-pill);padding:3px 9px;white-space:nowrap}
+
+/* ══════════ BADGES ══════════ */
+.badges-count-chip{margin-right:auto;font-size:.72rem;font-weight:800;color:var(--teal-l);background:rgba(0,168,168,.1);border:1px solid var(--br-hi);border-radius:var(--r-pill);padding:4px 11px;flex-shrink:0}
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px}
+.badge-card{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border-radius:var(--r-lg);border:1px solid var(--br);background:rgba(255,255,255,.02);text-align:center;transition:var(--t)}
+.badge-card.earned{background:linear-gradient(160deg,rgba(0,168,168,.12),rgba(212,112,72,.08));border-color:var(--br-hi)}
+.badge-card.locked{opacity:.42;filter:grayscale(.6)}
+.badge-icon{font-size:1.6rem}
+.badge-title{font-size:.66rem;font-weight:800;color:var(--txt-1);line-height:1.3}
+.badge-progress{font-size:.6rem;color:var(--txt-3);font-weight:700}
+
+/* ══════════ LEADERBOARD ══════════ */
+.leaderboard-scope-toggle{display:flex;gap:6px;margin-bottom:14px;background:rgba(0,168,168,.05);border-radius:var(--r-pill);padding:4px;width:fit-content}
+.leaderboard-scope-toggle .voice-lang-btn{padding:8px 16px;font-size:.78rem}
+.my-rank-card{display:flex;align-items:center;gap:14px;padding:16px 18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(0,168,168,.12),rgba(212,112,72,.1));border:1.5px solid var(--br-hi)}
+.my-rank-card.hidden{display:none}
+.my-rank-num{font-size:1.7rem;font-weight:900;color:var(--teal-l);flex-shrink:0}
+.my-rank-title{font-size:.78rem;font-weight:700;color:var(--txt-3)}
+.my-rank-points{font-size:.95rem;font-weight:900;color:var(--txt-1)}
+.leaderboard-list{display:flex;flex-direction:column}
+.leaderboard-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--br)}
+.leaderboard-row:first-child{border-top:none}
+.leaderboard-rank{width:28px;flex-shrink:0;text-align:center;font-size:.9rem;font-weight:900;color:var(--txt-3)}
+.leaderboard-row.top1 .leaderboard-rank{color:#FFD700;font-size:1.15rem}
+.leaderboard-row.top2 .leaderboard-rank{color:#C0C0C0;font-size:1.05rem}
+.leaderboard-row.top3 .leaderboard-rank{color:#CD7F32;font-size:1rem}
+.leaderboard-row.is-me{background:rgba(0,168,168,.06);border-radius:var(--r-md);margin:0 -8px;padding:11px 8px}
+.leaderboard-body{flex:1;min-width:0}
+.leaderboard-name{font-size:.85rem;font-weight:800;color:var(--txt-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leaderboard-sub{font-size:.7rem;color:var(--txt-3)}
+.leaderboard-points{flex-shrink:0;font-size:.8rem;font-weight:800;color:var(--terra-l)}
+
+/* ══════════ INTERACTIVE QUIZ ══════════ */
+.quiz-wrap{display:flex;flex-direction:column;gap:18px}
+.quiz-topic{font-size:.95rem;font-weight:900;color:var(--txt-1);padding-bottom:12px;border-bottom:1px solid var(--br)}
+.quiz-question-block{display:flex;flex-direction:column;gap:10px}
+.quiz-question-num{font-size:.7rem;font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.02em}
+.quiz-question-text{font-size:.9rem;font-weight:700;color:var(--txt-1);line-height:1.6}
+.quiz-options{display:flex;flex-direction:column;gap:8px}
+.quiz-option{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--br);border-radius:var(--r-lg);background:rgba(255,255,255,.02);cursor:pointer;transition:var(--t)}
+.quiz-option:hover{border-color:var(--br-hi);background:rgba(0,168,168,.05)}
+.quiz-option input{accent-color:#6366F1;width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.quiz-option-text{font-size:.83rem;color:var(--txt-2);font-weight:600}
+.quiz-option.answered{cursor:default}
+.quiz-option.answered:hover{background:rgba(255,255,255,.02)}
+.quiz-option.answered.correct{border-color:#22965A;background:rgba(34,150,90,.12)}
+.quiz-option.answered.correct .quiz-option-text{color:#4FD095;font-weight:800}
+.quiz-option.answered.incorrect{border-color:#D65050;background:rgba(214,80,80,.1)}
+.quiz-option.answered.incorrect .quiz-option-text{color:#E88;font-weight:800}
+.quiz-explanation{font-size:.78rem;line-height:1.7;padding:10px 12px;border-radius:var(--r-md);background:rgba(255,255,255,.03)}
+.quiz-explanation.hidden{display:none}
+.quiz-explanation.correct-exp{color:#4FD095;background:rgba(34,150,90,.08)}
+.quiz-explanation.incorrect-exp{color:var(--txt-2);background:rgba(214,80,80,.06)}
+.quiz-submit-btn{background:linear-gradient(135deg,#4F46E5,#6366F1)!important;box-shadow:0 4px 16px rgba(99,102,241,.3)!important}
+.quiz-submit-btn:disabled{opacity:.7;cursor:default;transform:none!important}
+.quiz-result{text-align:center}
+.quiz-result.hidden{display:none}
+.quiz-score-chip{display:inline-block;padding:12px 24px;font-size:1.05rem;font-weight:900;color:var(--txt-1);background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(0,168,168,.1));border:1.5px solid var(--br-hi);border-radius:var(--r-pill)}
+
+/* ══════════ COMING SOON (PDF + MEETING) ══════════ */
+.nav-pill-soon{position:relative}
+.soon-dot{position:absolute;top:4px;left:4px;width:7px;height:7px;border-radius:50%;background:var(--terra-l);box-shadow:0 0 0 0 rgba(212,112,72,.6);animation:soon-dot-pulse 1.8s ease-in-out infinite}
+@keyframes soon-dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,112,72,.5)}50%{box-shadow:0 0 0 5px rgba(212,112,72,0)}}
+.soon-page{max-width:520px;margin:0 auto;text-align:center;padding:8px 4px 24px}
+.soon-badge-top{display:inline-flex;align-items:center;gap:6px;background:rgba(212,112,72,.12);border:1.5px solid rgba(212,112,72,.4);color:var(--terra-l);font-size:.78rem;font-weight:800;padding:7px 16px;border-radius:var(--r-pill);margin-bottom:22px}
+.soon-icon-stack{position:relative;width:100px;height:100px;margin:0 auto 22px;display:flex;align-items:center;justify-content:center}
+.soon-icon-main{font-size:3.6rem;animation:soon-float 3s ease-in-out infinite}
+@keyframes soon-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.soon-icon-orbit{position:absolute;bottom:2px;left:2px;font-size:1.6rem;background:var(--bg2);border:2px solid var(--br-hi);border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;animation:soon-orbit-pulse 2.4s ease-in-out infinite}
+@keyframes soon-orbit-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.soon-title{font-size:1.3rem;font-weight:900;line-height:1.5;color:var(--txt-1);margin-bottom:14px}
+.soon-desc{font-size:.88rem;color:var(--txt-2);line-height:1.85;margin-bottom:26px}
+.soon-features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:26px}
+.soon-feature-card{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r-lg);padding:16px 8px}
+.soon-feature-icon{font-size:1.5rem;margin-bottom:8px}
+.soon-feature-title{font-size:.78rem;font-weight:800;color:var(--txt-1);margin-bottom:3px}
+.soon-feature-sub{font-size:.66rem;color:var(--txt-3);line-height:1.5}
+.soon-cta-card{background:linear-gradient(135deg,rgba(0,168,168,.08),rgba(212,112,72,.08));border:1.5px solid var(--br-hi);border-radius:var(--r-xl);padding:22px 20px}
+.soon-cta-text{font-size:.88rem;font-weight:800;color:var(--txt-1);margin-bottom:4px}
+.soon-cta-count{font-size:.76rem;color:var(--txt-3);margin-bottom:16px}
+.soon-notify-btn{max-width:260px;margin:0 auto}
+.soon-notify-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+@media(max-width:420px){.soon-features-grid{grid-template-columns:1fr}}
+
 /* ══════════ RESPONSE STATES ══════════ */
 .response-card{min-height:175px}
 .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 0;gap:18px}
@@ -202,6 +503,8 @@ button,select,textarea{font-family:var(--font)}
 .response-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;background:rgba(0,168,168,.12);border:1px solid var(--br-hi);border-radius:var(--r-pill);font-size:.75rem;font-weight:800;color:var(--teal-l)}
 .badge-summarize{background:rgba(212,112,72,.12);border-color:rgba(212,112,72,.4);color:var(--terra-l)}
 .badge-questions{background:rgba(138,71,39,.12);border-color:rgba(138,71,39,.4);color:#E8987A}
+.badge-homework{background:rgba(34,150,90,.12);border-color:rgba(34,150,90,.4);color:#4FD095}
+.badge-quiz{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.4);color:#818CF8}
 .response-actions{display:flex;gap:7px}
 .icon-btn{width:36px;height:36px;background:rgba(0,168,168,.07);border:1.5px solid var(--br);border-radius:10px;color:var(--txt-3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--ts);padding:0}
 .icon-btn svg{width:15px;height:15px}
@@ -295,6 +598,18 @@ button,select,textarea{font-family:var(--font)}
 .simple-close:hover{background:rgba(212,112,72,.1);border-color:rgba(212,112,72,.4);color:var(--terra-l)}
 .simple-content{font-size:1.08rem;line-height:2;color:var(--txt-2);white-space:pre-wrap;margin-bottom:22px;font-weight:500;letter-spacing:.02em;word-spacing:.05em}
 .simple-tts-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border:none;border-radius:var(--r-lg);color:#fff;font-size:.94rem;font-weight:800;cursor:pointer;transition:var(--ts);box-shadow:var(--sh-teal);min-height:50px}
+
+/* ══════════ STREAK CELEBRATION OVERLAY ══════════ */
+.streak-celebrate-overlay{position:fixed;inset:0;background:rgba(7,16,16,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;animation:ovin .25s var(--ease) both}
+.streak-celebrate-overlay.hidden{display:none}
+.streak-celebrate-card{background:var(--bg2);border:1.5px solid var(--br-hi);border-radius:var(--r-xl);padding:36px 26px;max-width:340px;width:100%;text-align:center;box-shadow:var(--sh-h);animation:sc-pop .45s var(--spring) both}
+@keyframes sc-pop{0%{opacity:0;transform:scale(.7) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.streak-celebrate-emoji{font-size:3.4rem;line-height:1;margin-bottom:12px;animation:sc-bounce 1s ease-in-out infinite}
+@keyframes sc-bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.06)}}
+.streak-celebrate-title{font-size:1.25rem;font-weight:900;color:var(--txt-1);margin-bottom:8px}
+.streak-celebrate-desc{font-size:.88rem;color:var(--txt-2);line-height:1.7;margin-bottom:22px}
+.streak-celebrate-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--teal-d),var(--teal-m));border:none;border-radius:var(--r-lg);color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--ts);box-shadow:var(--sh-teal)}
+.streak-celebrate-btn:hover{transform:translateY(-2px)}
 .simple-tts-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,168,168,.4)}
  
 /* ══════════ UTILITIES ══════════ */
@@ -311,6 +626,8 @@ button,select,textarea{font-family:var(--font)}
   .stat-num{font-size:1.3rem}
   .nav-pill span:not(.pill-icon){display:none}
   .nav-pill{padding:8px 10px}
+  .auth-label{display:none}
+  .auth-btn{padding:7px 9px}
   .btn-hint{display:none}
   .action-btn{min-height:68px;padding:11px 6px}
 }
@@ -375,9 +692,22 @@ button,select,textarea{font-family:var(--font)}
       </div>
       <nav class="header-nav">
         <button class="nav-pill active" data-tab="ask"><span class="pill-icon">🎓</span><span>اسأل</span></button>
+        <button class="nav-pill" data-tab="planner"><span class="pill-icon">📅</span><span>جدولي</span></button>
+        <button class="nav-pill" data-tab="dashboard"><span class="pill-icon">🎛️</span><span>لوحتي</span></button>
+        <button class="nav-pill" data-tab="leaderboard"><span class="pill-icon">🏆</span><span>الصدارة</span></button>
+        <button class="nav-pill" data-tab="school"><span class="pill-icon">🏫</span><span>المدرسة</span></button>
+        <button class="nav-pill" data-tab="teacher"><span class="pill-icon">🧑‍🏫</span><span>معلم</span></button>
+        <button class="nav-pill" data-tab="parent"><span class="pill-icon">👨‍👩‍👧</span><span>ولي أمر</span></button>
+        <button class="nav-pill" data-tab="ministry"><span class="pill-icon">🏛️</span><span>الوزارة</span></button>
         <button class="nav-pill" data-tab="lessons"><span class="pill-icon">📚</span><span>الدروس</span></button>
+        <button class="nav-pill nav-pill-soon" data-tab="pdf-soon"><span class="pill-icon">📄</span><span>PDF</span><span class="soon-dot"></span></button>
         <button class="nav-pill" data-tab="about"><span class="pill-icon">🏆</span><span>المبادرة</span></button>
         <button class="simple-toggle" id="simpleToggle"><span>🧩</span><span class="simple-label">مبسّط</span></button>
+        <button class="auth-btn" id="authLoggedOutBtn"><span>🔐</span><span class="auth-label">دخول</span></button>
+        <div class="auth-user-chip hidden" id="authUserChip">
+          <span class="auth-user-name" id="authUserName"></span>
+          <button class="auth-logout-btn" id="authLogoutBtn" title="تسجيل الخروج">🚪</button>
+        </div>
       </nav>
     </div>
   </header>
@@ -399,6 +729,24 @@ button,select,textarea{font-family:var(--font)}
           <div class="stat"><span class="stat-num">27</span><span class="stat-lbl">محافظة</span></div>
         </div>
       </div>
+
+      <div class="streak-widget" id="streakWidget">
+        <div class="streak-flame" id="streakFlame">🔥</div>
+        <div class="streak-info">
+          <div class="streak-count"><span id="streakCount">0</span> يوم متتالي</div>
+          <div class="streak-sub">أفضل سلسلة: <span id="streakBest">0</span> يوم · <span id="streakPoints">0</span> نقطة</div>
+        </div>
+        <div class="streak-today" id="streakToday">اسأل سؤال النهاردة وابدأ سلسلتك</div>
+      </div>
+
+      <button class="voice-entry-btn" id="voiceEntryBtn">
+        <span class="voice-entry-icon">🎙️</span>
+        <div class="voice-entry-text">
+          <span class="voice-entry-title">اتكلم مع المعلم صوتيًا</span>
+          <span class="voice-entry-sub">اسأل، ناقش الدرس، أو تمرّن على الإنجليزية</span>
+        </div>
+        <span class="voice-entry-arrow">‹</span>
+      </button>
  
       <div class="card lesson-card">
         <div class="card-header">
@@ -446,7 +794,7 @@ button,select,textarea{font-family:var(--font)}
         </div>
         <div class="textarea-wrap">
           <textarea id="questionInput" class="question-input"
-            placeholder="اكتب سؤالك هنا… مثلاً: شرح قانون نيوتن بطريقة سهلة" rows="4"></textarea>
+            placeholder="اكتب سؤالك هنا أو ارفق صورة الواجب… مثلاً: شرح قانون نيوتن بطريقة سهلة" rows="4"></textarea>
           <button class="voice-btn" id="voiceBtn" title="تحدّث بدلاً من الكتابة">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -455,6 +803,19 @@ button,select,textarea{font-family:var(--font)}
               <line x1="8" y1="23" x2="16" y2="23"/>
             </svg>
           </button>
+          <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp" hidden>
+        </div>
+        <button type="button" class="image-attach-prompt" id="imageAttachPrompt">
+          <span class="iap-icon">📎</span>
+          <span class="iap-text">اضغط هنا عشان ترفق صورة سؤال أو واجب</span>
+        </button>
+        <div class="image-preview hidden" id="imagePreview">
+          <img id="imagePreviewThumb" alt="معاينة الصورة المرفقة">
+          <div class="image-preview-info">
+            <span class="image-preview-label">🖼️ صورة مرفقة</span>
+            <span class="image-preview-hint">هيتم تحليلها مع سؤالك</span>
+          </div>
+          <button class="image-remove-btn" id="removeImageBtn" title="إزالة الصورة">✕</button>
         </div>
         <div class="char-count" id="charCount">0 / 500</div>
         <div class="action-buttons">
@@ -475,6 +836,18 @@ button,select,textarea{font-family:var(--font)}
             <div class="btn-icon-wrap">❓</div>
             <span class="btn-text">أسئلة</span>
             <span class="btn-hint">اختبار</span>
+          </button>
+          <button class="action-btn btn-homework" data-mode="homework" id="homeworkBtn">
+            <span class="btn-glow"></span>
+            <div class="btn-icon-wrap">📸</div>
+            <span class="btn-text">حلّ الواجب</span>
+            <span class="btn-hint">من صورة</span>
+          </button>
+          <button class="action-btn btn-quiz" data-mode="quiz" id="quizBtn">
+            <span class="btn-glow"></span>
+            <div class="btn-icon-wrap">📝</div>
+            <span class="btn-text">اختبار تفاعلي</span>
+            <span class="btn-hint">جرّب نفسك</span>
           </button>
         </div>
       </div>
@@ -538,7 +911,507 @@ button,select,textarea{font-family:var(--font)}
       </div>
       <div class="lessons-grid" id="lessonsGrid"></div>
     </section>
- 
+
+    <!-- TAB: STUDY PLANNER -->
+    <section class="tab-panel" id="tab-planner">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>مساعد التنظيم الذكي</div>
+        <h1 class="hero-title">جدولك <span class="gradient-text">الدراسي</span></h1>
+        <p class="hero-desc">قولّي وقتك إزاي، والذكاء الاصطناعي يظبطلك جدول يناسب حياتك من غير ضغط</p>
+      </div>
+
+      <div class="card planner-card" id="plannerFormCard">
+        <div class="card-header">
+          <div class="card-icon-badge teal">📅</div>
+          <span class="card-label">جهّز جدولك</span>
+        </div>
+
+        <div class="planner-field">
+          <label class="planner-label">📌 أيام الأسبوع المتاحة للمذاكرة</label>
+          <div class="day-pills" id="dayPills">
+            <button type="button" class="day-pill" data-day="السبت">السبت</button>
+            <button type="button" class="day-pill" data-day="الأحد">الأحد</button>
+            <button type="button" class="day-pill" data-day="الاثنين">الاثنين</button>
+            <button type="button" class="day-pill" data-day="الثلاثاء">الثلاثاء</button>
+            <button type="button" class="day-pill" data-day="الأربعاء">الأربعاء</button>
+            <button type="button" class="day-pill" data-day="الخميس">الخميس</button>
+            <button type="button" class="day-pill" data-day="الجمعة">الجمعة</button>
+          </div>
+        </div>
+
+        <div class="planner-field">
+          <label class="planner-label">⏱️ كام ساعة تقريبًا تقدر تذاكر في اليوم؟</label>
+          <div class="select-wrap">
+            <select id="hoursPerDaySelect" class="selector">
+              <option value="1">ساعة واحدة</option>
+              <option value="2" selected>ساعتين</option>
+              <option value="3">3 ساعات</option>
+              <option value="4">4 ساعات</option>
+              <option value="5">5 ساعات</option>
+              <option value="6">6 ساعات فأكتر</option>
+            </select>
+            <span class="select-arrow">▾</span>
+          </div>
+        </div>
+
+        <div class="planner-field">
+          <label class="planner-label">📚 المواد اللي عايز تركّز عليها</label>
+          <div class="day-pills" id="subjectPills">
+            <button type="button" class="day-pill" data-subject="math">رياضيات</button>
+            <button type="button" class="day-pill" data-subject="science">علوم</button>
+            <button type="button" class="day-pill" data-subject="arabic">لغة عربية</button>
+            <button type="button" class="day-pill" data-subject="english">إنجليزية</button>
+            <button type="button" class="day-pill" data-subject="history">تاريخ</button>
+            <button type="button" class="day-pill" data-subject="geography">جغرافيا</button>
+            <button type="button" class="day-pill" data-subject="physics">فيزياء</button>
+            <button type="button" class="day-pill" data-subject="chemistry">كيمياء</button>
+            <button type="button" class="day-pill" data-subject="biology">أحياء</button>
+          </div>
+        </div>
+
+        <div class="planner-field">
+          <label class="planner-label">🎯 هدفك من الجدول ده</label>
+          <div class="day-pills goal-pills" id="goalPills">
+            <button type="button" class="day-pill goal-pill active" data-goal="general">مراجعة عامة مستمرة</button>
+            <button type="button" class="day-pill goal-pill" data-goal="exam">استعداد لامتحان قريب</button>
+            <button type="button" class="day-pill goal-pill" data-goal="subject">تقوية مادة معينة</button>
+          </div>
+        </div>
+
+        <div class="planner-field" id="examDateField" style="display:none">
+          <label class="planner-label">🗓️ تاريخ الامتحان (اختياري)</label>
+          <input type="date" id="examDateInput" class="selector planner-date-input">
+        </div>
+
+        <button class="planner-generate-btn" id="generatePlanBtn">
+          <span>✨ ولّد جدولي الدراسي</span>
+        </button>
+        <p class="planner-hint" id="plannerHint">اختار يوم واحد على الأقل ومادة واحدة على الأقل</p>
+      </div>
+
+      <div class="card planner-result-card hidden" id="plannerResultCard">
+        <div class="card-header">
+          <div class="card-icon-badge teal">🗂️</div>
+          <span class="card-label">جدولك الأسبوعي</span>
+          <button class="planner-regenerate-btn" id="regeneratePlanBtn">🔄 عدّل الجدول</button>
+        </div>
+        <div id="plannerLoadingState" class="loading-state hidden">
+          <div class="ai-spinner">
+            <div class="spin-ring spin-ring-1"></div>
+            <div class="spin-ring spin-ring-2"></div>
+            <div class="spin-ring spin-ring-3"></div>
+            <div class="spin-center">📅</div>
+          </div>
+          <p class="loading-text">بيظبطلك جدول يناسب وقتك…</p>
+        </div>
+        <div id="plannerSummary" class="planner-summary"></div>
+        <div id="plannerWeekGrid" class="planner-week-grid"></div>
+        <div id="plannerTips" class="planner-tips"></div>
+      </div>
+    </section>
+
+    <!-- TAB: STUDENT DASHBOARD -->
+    <section class="tab-panel" id="tab-dashboard">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>مساحتك الشخصية</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">تحكمك</span></h1>
+        <p class="hero-desc">كل حاجة خاصة بيك في مكان واحد</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="dashboardLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول عشان تشوف لوحتك</h3>
+        <p class="dlc-desc">تقدر تتابع سلسلة استمراريتك، جدولك الدراسي، وآخر أسئلتك من أي جهاز</p>
+        <button class="planner-generate-btn dlc-btn" id="dashboardLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="dashboard-content hidden" id="dashboardContent">
+        <div class="dashboard-welcome" id="dashboardWelcome"></div>
+
+        <div class="dashboard-stats-grid">
+          <div class="dstat-card">
+            <div class="dstat-icon">🔥</div>
+            <div class="dstat-num" id="dashStreakNum">0</div>
+            <div class="dstat-label">يوم متتالي</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">🏆</div>
+            <div class="dstat-num" id="dashBestNum">0</div>
+            <div class="dstat-label">أفضل سلسلة</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">⭐</div>
+            <div class="dstat-num" id="dashPointsNum">0</div>
+            <div class="dstat-label">نقطة</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">📝</div>
+            <div class="dstat-num" id="dashActivityNum">0</div>
+            <div class="dstat-label">نشاط حديث</div>
+          </div>
+        </div>
+
+        <div class="card dashboard-section-card hidden" id="dashParentRequestsCard">
+          <div class="card-header">
+            <div class="card-icon-badge teal">👨‍👩‍👧</div>
+            <span class="card-label">طلبات متابعة من أولياء الأمور</span>
+          </div>
+          <div id="dashParentRequestsList" class="school-people-list"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">📅</div>
+            <span class="card-label">جدولك الدراسي</span>
+            <button class="planner-regenerate-btn" id="dashGoToPlannerBtn">فتح الجدول ⟵</button>
+          </div>
+          <div id="dashPlanPreview" class="dash-plan-preview"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">📋</div>
+            <span class="card-label">آخر أنشطتك</span>
+          </div>
+          <div id="dashActivityList" class="dash-activity-list"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">🏅</div>
+            <span class="card-label">الأوسمة</span>
+            <span class="badges-count-chip" id="dashBadgesCount">0/0</span>
+          </div>
+          <div id="dashBadgesGrid" class="badges-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: LEADERBOARD -->
+    <section class="tab-panel" id="tab-leaderboard">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>منافسة ودّية</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">الصدارة</span></h1>
+        <p class="hero-desc">شوف ترتيبك بين زمايلك</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="leaderboardLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول عشان تشوف ترتيبك</h3>
+        <p class="dlc-desc">وتقدر تتنافس مع زمايلك على النقاط</p>
+        <button class="planner-generate-btn dlc-btn" id="leaderboardLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="dashboard-content hidden" id="leaderboardContent">
+        <div class="leaderboard-scope-toggle">
+          <button class="voice-lang-btn active" data-scope="global" id="lbScopeGlobal">🌍 عام</button>
+          <button class="voice-lang-btn" data-scope="school" id="lbScopeSchool">🏫 مدرستي</button>
+        </div>
+
+        <div class="card my-rank-card hidden" id="myRankCard">
+          <span class="my-rank-num" id="myRankNum">#-</span>
+          <div class="my-rank-info">
+            <div class="my-rank-title">ترتيبك</div>
+            <div class="my-rank-points" id="myRankPoints">0 نقطة</div>
+          </div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: SCHOOL DASHBOARD -->
+    <section class="tab-panel" id="tab-school">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>لمسؤولي المدارس</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">المدرسة</span></h1>
+        <p class="hero-desc">تابع معلميك وطلابك في مكان واحد</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="schoolLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول عشان تشوف لوحة مدرستك</h3>
+        <p class="dlc-desc">اللوحة دي متاحة لحسابات "مسؤول مدرسة" بس</p>
+        <button class="planner-generate-btn dlc-btn" id="schoolLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="card dashboard-login-cta hidden" id="schoolWrongRoleCta">
+        <div class="dlc-icon">🚫</div>
+        <h3 class="dlc-title">اللوحة دي لمسؤولي المدارس بس</h3>
+        <p class="dlc-desc">حسابك الحالي مش من نوع "مسؤول مدرسة"، فمعندكش صلاحية توصل للوحة دي</p>
+      </div>
+
+      <div class="dashboard-content hidden" id="schoolContent">
+        <div class="dashboard-welcome" id="schoolWelcome"></div>
+
+        <div class="dashboard-stats-grid">
+          <div class="dstat-card">
+            <div class="dstat-icon">🧑‍🏫</div>
+            <div class="dstat-num" id="schoolTeachersNum">0</div>
+            <div class="dstat-label">معلم</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">🎓</div>
+            <div class="dstat-num" id="schoolStudentsNum">0</div>
+            <div class="dstat-label">طالب</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">✅</div>
+            <div class="dstat-num" id="schoolActiveNum">0</div>
+            <div class="dstat-label">نشط النهاردة</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">🔥</div>
+            <div class="dstat-num" id="schoolAvgStreakNum">0</div>
+            <div class="dstat-label">متوسط السلسلة</div>
+          </div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">🧑‍🏫</div>
+            <span class="card-label">المعلمون</span>
+          </div>
+          <div id="schoolTeachersList" class="school-people-list"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">🎓</div>
+            <span class="card-label">الطلاب</span>
+          </div>
+          <div id="schoolStudentsList" class="school-people-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: TEACHER DASHBOARD -->
+    <section class="tab-panel" id="tab-teacher">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>لمعلمي المدرسة</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">المعلم</span></h1>
+        <p class="hero-desc">تابع مستوى ونشاط طلاب مدرستك</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="teacherLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول عشان تشوف لوحتك</h3>
+        <p class="dlc-desc">اللوحة دي متاحة لحسابات "معلم" بس</p>
+        <button class="planner-generate-btn dlc-btn" id="teacherLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="card dashboard-login-cta hidden" id="teacherWrongRoleCta">
+        <div class="dlc-icon">🚫</div>
+        <h3 class="dlc-title">اللوحة دي لحسابات المعلمين بس</h3>
+        <p class="dlc-desc">حسابك الحالي مش من نوع "معلم"</p>
+      </div>
+
+      <div class="card dashboard-login-cta hidden" id="teacherNoSchoolCta">
+        <div class="dlc-icon">🏫</div>
+        <h3 class="dlc-title">حسابك مش مرتبط بمدرسة</h3>
+        <p class="dlc-desc">لازم تختار مدرستك وقت التسجيل عشان تقدر تشوف طلابها هنا. لو مش لاقي مدرستك في القائمة، اطلب من مسؤول المدرسة يعمل حساب "مسؤول مدرسة" الأول</p>
+      </div>
+
+      <div class="dashboard-content hidden" id="teacherContent">
+        <div class="dashboard-welcome" id="teacherWelcome"></div>
+
+        <div class="dashboard-stats-grid">
+          <div class="dstat-card">
+            <div class="dstat-icon">🎓</div>
+            <div class="dstat-num" id="teacherStudentsNum">0</div>
+            <div class="dstat-label">طالب</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">✅</div>
+            <div class="dstat-num" id="teacherActiveWeekNum">0</div>
+            <div class="dstat-label">نشط الأسبوع ده</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">⭐</div>
+            <div class="dstat-num" id="teacherAvgPointsNum">0</div>
+            <div class="dstat-label">متوسط النقاط</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">📸</div>
+            <div class="dstat-num" id="teacherHomeworkNum">0</div>
+            <div class="dstat-label">واجب اتحل</div>
+          </div>
+        </div>
+
+        <div class="card dashboard-section-card" id="teacherAttentionCard">
+          <div class="card-header">
+            <div class="card-icon-badge teal">⚠️</div>
+            <span class="card-label">محتاجين متابعة</span>
+          </div>
+          <p class="teacher-attention-hint">طلاب مفيهمش نشاط من 7 أيام فأكتر</p>
+          <div id="teacherAttentionList" class="school-people-list"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">🎓</div>
+            <span class="card-label">كل الطلاب</span>
+            <div class="select-wrap teacher-grade-filter-wrap">
+              <select id="teacherGradeFilter" class="selector">
+                <option value="">كل الصفوف</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+          <div id="teacherStudentsList" class="school-people-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: PARENT DASHBOARD -->
+    <section class="tab-panel" id="tab-parent">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>لأولياء الأمور</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">ولي الأمر</span></h1>
+        <p class="hero-desc">تابع مستوى ابنك أو بنتك لحظة بلحظة</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="parentLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول عشان تتابع ابنك</h3>
+        <p class="dlc-desc">اللوحة دي متاحة لحسابات "ولي أمر" بس</p>
+        <button class="planner-generate-btn dlc-btn" id="parentLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="card dashboard-login-cta hidden" id="parentWrongRoleCta">
+        <div class="dlc-icon">🚫</div>
+        <h3 class="dlc-title">اللوحة دي لحسابات أولياء الأمور بس</h3>
+        <p class="dlc-desc">حسابك الحالي مش من نوع "ولي أمر"</p>
+      </div>
+
+      <div class="dashboard-content hidden" id="parentContent">
+        <div class="card planner-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">➕</div>
+            <span class="card-label">اربط حساب ابنك/بنتك</span>
+          </div>
+          <p class="parent-add-hint">هيوصل لابنك/بنتك طلب موافقة، وبعد ما يوافق هتقدر تشوف نشاطه هنا</p>
+          <div class="parent-add-row">
+            <input type="email" id="parentChildEmail" class="planner-date-input" placeholder="📧 البريد الإلكتروني بتاع حساب الطالب">
+            <button class="planner-generate-btn parent-add-btn" id="parentAddChildBtn">إرسال طلب</button>
+          </div>
+          <p class="auth-error hidden" id="parentAddError"></p>
+        </div>
+
+        <div class="card dashboard-section-card" id="parentPendingCard">
+          <div class="card-header">
+            <div class="card-icon-badge teal">⏳</div>
+            <span class="card-label">طلبات في الانتظار</span>
+          </div>
+          <div id="parentPendingList" class="school-people-list"></div>
+        </div>
+
+        <div id="parentChildrenWrap"></div>
+      </div>
+    </section>
+
+    <!-- TAB: MINISTRY DASHBOARD -->
+    <section class="tab-panel" id="tab-ministry">
+      <div class="hero">
+        <div class="hero-badge"><span class="badge-dot"></span>وزارة التربية والتعليم</div>
+        <h1 class="hero-title">لوحة <span class="gradient-text">الوزارة</span></h1>
+        <p class="hero-desc">نظرة عامة على مستوى الدولة، كل المدارس مع بعض</p>
+      </div>
+
+      <div class="card dashboard-login-cta" id="ministryLoginCta">
+        <div class="dlc-icon">🔐</div>
+        <h3 class="dlc-title">سجّل دخول للوصول للوحة</h3>
+        <p class="dlc-desc">اللوحة دي متاحة لحسابات "الوزارة" بس</p>
+        <button class="planner-generate-btn dlc-btn" id="ministryLoginBtn">تسجيل الدخول / حساب جديد</button>
+      </div>
+
+      <div class="card dashboard-login-cta hidden" id="ministryWrongRoleCta">
+        <div class="dlc-icon">🚫</div>
+        <h3 class="dlc-title">اللوحة دي لحسابات الوزارة بس</h3>
+        <p class="dlc-desc">حسابك الحالي مش من نوع "وزارة التربية والتعليم"</p>
+      </div>
+
+      <div class="dashboard-content hidden" id="ministryContent">
+        <div class="dashboard-stats-grid">
+          <div class="dstat-card">
+            <div class="dstat-icon">🏫</div>
+            <div class="dstat-num" id="ministrySchoolsNum">0</div>
+            <div class="dstat-label">مدرسة</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">🎓</div>
+            <div class="dstat-num" id="ministryStudentsNum">0</div>
+            <div class="dstat-label">طالب</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">🧑‍🏫</div>
+            <div class="dstat-num" id="ministryTeachersNum">0</div>
+            <div class="dstat-label">معلم</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">✅</div>
+            <div class="dstat-num" id="ministryActiveNum">0</div>
+            <div class="dstat-label">نشط النهاردة</div>
+          </div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">📊</div>
+            <span class="card-label">توزيع الطلاب على الصفوف</span>
+          </div>
+          <div id="ministryGradeChart" class="ministry-grade-chart"></div>
+        </div>
+
+        <div class="card dashboard-section-card">
+          <div class="card-header">
+            <div class="card-icon-badge teal">🏫</div>
+            <span class="card-label">مقارنة المدارس</span>
+          </div>
+          <div id="ministrySchoolsTable" class="ministry-schools-table"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: PDF + VIRTUAL MEETING (COMING SOON) -->
+    <section class="tab-panel" id="tab-pdf-soon">
+      <div class="soon-page">
+        <div class="soon-badge-top">🚧 قريبًا / Coming Soon</div>
+        <div class="soon-icon-stack">
+          <span class="soon-icon-main">📄</span>
+          <span class="soon-icon-orbit">🎙️</span>
+        </div>
+        <h1 class="soon-title">الشرح التفاعلي للملفات <span class="gradient-text">واجتماعات الذكاء الاصطناعي</span></h1>
+        <p class="soon-desc">ارفع أي PDF أو كتاب دراسي، والذكاء الاصطناعي يتدرّب عليه، يديك ملخص ذكي، ويولّد اختبارات منه. وبعدها تقدر تدخل "غرفة اجتماع" افتراضية يتكلم فيها المعلم الذكي معاك صوتيًا عن محتوى الملف — تقاطعه، تطلب إعادة شرح، أو تدخل اختبار فوري لحظة بلحظة.</p>
+
+        <div class="soon-features-grid">
+          <div class="soon-feature-card">
+            <div class="soon-feature-icon">📤</div>
+            <div class="soon-feature-title">رفع أي ملف</div>
+            <div class="soon-feature-sub">PDF أو كتاب دراسي كامل</div>
+          </div>
+          <div class="soon-feature-card">
+            <div class="soon-feature-icon">🧠</div>
+            <div class="soon-feature-title">ملخصات واختبارات</div>
+            <div class="soon-feature-sub">يتولّد أوتوماتيك من محتوى الملف</div>
+          </div>
+          <div class="soon-feature-card">
+            <div class="soon-feature-icon">🗣️</div>
+            <div class="soon-feature-title">غرفة اجتماع صوتية</div>
+            <div class="soon-feature-sub">اتكلم، قاطع، واطلب إعادة شرح</div>
+          </div>
+        </div>
+
+        <div class="soon-cta-card">
+          <p class="soon-cta-text" id="soonCtaText">كام طالب مهتم بالميزة دي؟</p>
+          <p class="soon-cta-count"><span id="soonInterestCount">0</span> طالب سجّل اهتمامه لحد دلوقتي</p>
+          <button class="planner-generate-btn soon-notify-btn" id="soonNotifyBtn">🔔 أعلمني لما تتاح</button>
+        </div>
+      </div>
+    </section>
+
     <!-- TAB: ABOUT -->
     <section class="tab-panel" id="tab-about">
       <div class="hero">
@@ -601,6 +1474,98 @@ button,select,textarea{font-family:var(--font)}
       </div>
       <div class="simple-content" id="simpleContent"></div>
       <button class="simple-tts-btn" id="simpleTtsBtn">🔊 استمع للإجابة</button>
+    </div>
+  </div>
+
+  <div class="streak-celebrate-overlay hidden" id="streakCelebrateOverlay">
+    <div class="streak-celebrate-card">
+      <div class="streak-celebrate-emoji" id="streakCelebrateEmoji">🔥</div>
+      <div class="streak-celebrate-title" id="streakCelebrateTitle">سلسلة 3 أيام!</div>
+      <div class="streak-celebrate-desc" id="streakCelebrateDesc">استمر كده، الاستمرارية هي سر التفوق</div>
+      <button class="streak-celebrate-btn" id="streakCelebrateClose">تمام، كمّل مذاكرة 💪</button>
+    </div>
+  </div>
+
+  <div class="auth-overlay hidden" id="authOverlay">
+    <div class="auth-card">
+      <button class="auth-close" id="authClose">✕</button>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" data-authtab="login">تسجيل الدخول</button>
+        <button class="auth-tab" id="authTabRegister" data-authtab="register">حساب جديد</button>
+      </div>
+
+      <form class="auth-form" id="loginForm">
+        <input type="email" id="loginEmail" class="planner-date-input" placeholder="📧 البريد الإلكتروني" required autocomplete="username">
+        <input type="password" id="loginPassword" class="planner-date-input" placeholder="🔒 كلمة السر" required autocomplete="current-password">
+        <button type="submit" class="planner-generate-btn">دخول</button>
+        <p class="auth-error hidden" id="loginError"></p>
+      </form>
+
+      <form class="auth-form hidden" id="registerForm">
+        <input type="text" id="regName" class="planner-date-input" placeholder="👤 الاسم كامل" required autocomplete="name">
+        <input type="email" id="regEmail" class="planner-date-input" placeholder="📧 البريد الإلكتروني" required autocomplete="username">
+        <input type="password" id="regPassword" class="planner-date-input" placeholder="🔒 كلمة السر (6 حروف على الأقل)" required autocomplete="new-password">
+        <div class="select-wrap">
+          <select id="regRole" class="selector">
+            <option value="student">🎓 طالب</option>
+            <option value="parent">👨‍👩‍👧 ولي أمر</option>
+            <option value="teacher">🧑‍🏫 معلم</option>
+            <option value="school_admin">🏫 مسؤول مدرسة</option>
+            <option value="tutoring_company">🏢 شركة دروس خصوصية</option>
+            <option value="ministry">🏛️ وزارة التربية والتعليم</option>
+          </select>
+          <span class="select-arrow">▾</span>
+        </div>
+        <div class="select-wrap" id="regGradeWrap">
+          <select id="regGrade" class="selector">
+            <option value="">الصف الدراسي</option>
+            <option value="1">الصف الأول الابتدائي</option><option value="2">الصف الثاني الابتدائي</option>
+            <option value="3">الصف الثالث الابتدائي</option><option value="4">الصف الرابع الابتدائي</option>
+            <option value="5">الصف الخامس الابتدائي</option><option value="6">الصف السادس الابتدائي</option>
+            <option value="7">الصف الأول الإعدادي</option><option value="8">الصف الثاني الإعدادي</option>
+            <option value="9">الصف الثالث الإعدادي</option><option value="10">الصف الأول الثانوي</option>
+            <option value="11">الصف الثاني الثانوي</option><option value="12">الصف الثالث الثانوي</option>
+          </select>
+          <span class="select-arrow">▾</span>
+        </div>
+        <input type="text" id="regSchoolName" class="planner-date-input hidden" placeholder="🏫 اسم المدرسة كامل">
+        <div class="select-wrap hidden" id="regSchoolSelectWrap">
+          <select id="regSchoolSelect" class="selector">
+            <option value="">مدرستك (اختياري)</option>
+          </select>
+          <span class="select-arrow">▾</span>
+        </div>
+        <button type="submit" class="planner-generate-btn">إنشاء الحساب</button>
+        <p class="auth-error hidden" id="registerError"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="voice-overlay hidden" id="voiceOverlay">
+    <div class="voice-card">
+      <div class="voice-header">
+        <span class="voice-header-title">🎙️ المحادثة الصوتية</span>
+        <div class="voice-lang-toggle" id="voiceLangToggle">
+          <button class="voice-lang-btn active" data-lang="ar" type="button">🇪🇬 عربي</button>
+          <button class="voice-lang-btn" data-lang="en" type="button">🇬🇧 EN</button>
+        </div>
+        <button class="voice-close" id="voiceClose" type="button">✕</button>
+      </div>
+      <div class="voice-messages" id="voiceMessages">
+        <p class="voice-empty-hint" id="voiceEmptyHint">اضغط على الميكروفون وابدأ الكلام 🎤</p>
+      </div>
+      <div class="voice-controls">
+        <button class="voice-reset-btn" id="voiceResetBtn" type="button" title="محادثة جديدة">🔄</button>
+        <button class="voice-mic-btn" id="voiceMicBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <div class="voice-status" id="voiceStatus">اضغط للتكلم</div>
+      </div>
     </div>
   </div>
  
