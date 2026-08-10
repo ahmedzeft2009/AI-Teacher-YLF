@@ -118,124 +118,69 @@ app.post('/api/auth/register', async (req, res) => {
     }
   }
 
-  let cleanSchoolId = null;
-  if ((role === 'student' || role === 'teacher') && school_id) {
-    const schoolRow = db.prepare('SELECT id FROM schools WHERE id = ?').get(Number(school_id));
-    if (schoolRow) cleanSchoolId = schoolRow.id; // لو المدرسة مش موجودة، نتجاهل الاختيار بهدوء بدل ما نرفض التسجيل كله
-  }
-
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);
-  if (existing) {
-    return res.status(409).json({ error: 'الإيميل ده متسجّل بحساب قبل كده' });
-  }
-
   try {
-    const password_hash = await auth.hashPassword(password);
-    const info = db.prepare(
-      `INSERT INTO users (email, password_hash, full_name, role, grade, school_id) VALUES (?, ?, ?, ?, ?, ?)`
-    ).run(cleanEmail, password_hash, cleanName, role, cleanGrade, cleanSchoolId);
+    const supabase = db.supabase; // الاتصال الحقيقي بـ Supabase من ملف db.js
 
-    const userId = info.lastInsertRowid;
+    // 1. التأكد هل الإيميل موجود مسبقاً؟
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', cleanEmail)
+      .maybeSingle();
 
-    // مسؤول المدرسة: بيتعمل صف مدرسة جديد ويترابط بيه تلقائيًا
-    if (role === 'school_admin') {
-      const schoolInfo = db.prepare('INSERT INTO schools (name, admin_user_id) VALUES (?, ?)').run(cleanSchoolName, userId);
-      db.prepare('UPDATE users SET school_id = ? WHERE id = ?').run(schoolInfo.lastInsertRowid, userId);
+    if (existingUser) {
+      return res.status(409).json({ error: 'الإيميل ده متسجّل بحساب قبل كده' });
     }
 
-    const user = { id: userId, email: cleanEmail, full_name: cleanName, role };
-    const token = auth.signToken(user);
+    // 2. تشفير الباسورد
+    const password_hash = await auth.hashPassword(password);
+
+    // 3. إدخال المستخدم الجديد في Supabase
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert([{
+        email: cleanEmail,
+        password_hash,
+        full_name: cleanName,
+        role,
+        grade: cleanGrade,
+        school_id: school_id ? Number(school_id) : null
+      }])
+      .select('id, email, full_name, role')
+      .single();
+
+    if (insertError || !newUser) {
+      console.error('Supabase Insert Error:', insertError);
+      return res.status(500).json({ error: 'حصل خطأ أثناء إنشاء الحساب' });
+    }
+
+    const userId = newUser.id;
+
+    // 4. لو مسؤول مدرسة، بننشئ المدرسة ونربطها بيه
+    if (role === 'school_admin') {
+      const { data: newSchool } = await supabase
+        .from('schools')
+        .insert([{ name: cleanSchoolName, admin_user_id: userId }])
+        .select('id')
+        .single();
+
+      if (newSchool) {
+        await supabase
+          .from('users')
+          .update({ school_id: newSchool.id })
+          .eq('id', userId);
+      }
+    }
+
+    // 5. إنشاء التوكن وتسجيل الدخول بالكويكي
+    const token = auth.signToken(newUser);
     auth.setAuthCookie(res, token);
 
-    return res.status(201).json({ user });
+    return res.status(201).json({ user: newUser });
   } catch (err) {
-    return res.status(500).json({ error: 'حصل خطأ أثناء إنشاء الحساب' });
+    console.error('Register Exception:', err);
+    return res.status(500).json({ error: 'حصل خطأ غير متوقع أثناء التسجيل' });
   }
-});
-
-app.get('/api/schools', (req, res) => {
-  const rows = db.prepare('SELECT id, name FROM schools ORDER BY name COLLATE NOCASE').all();
-  res.json({ schools: rows });
-});
-
-app.get('/api/school/dashboard', auth.requireAuth, auth.requireRole('school_admin'), (req, res) => {
-  const school = db.prepare('SELECT id, name, created_at FROM schools WHERE admin_user_id = ?').get(req.user.id);
-  if (!school) return res.status(404).json({ error: 'مفيش مدرسة مرتبطة بالحساب ده' });
-
-  const teachers = db.prepare(
-    'SELECT id, full_name, email, created_at, last_login_at FROM users WHERE role = ? AND school_id = ? ORDER BY full_name COLLATE NOCASE'
-  ).all('teacher', school.id);
-
-  const students = db.prepare(`
-    SELECT u.id, u.full_name, u.grade, u.email,
-           COALESCE(s.current_streak, 0) AS current_streak,
-           COALESCE(s.longest_streak, 0) AS longest_streak,
-           COALESCE(s.points, 0) AS points,
-           s.last_activity_date
-    FROM users u LEFT JOIN streaks s ON s.user_id = u.id
-    WHERE u.role = 'student' AND u.school_id = ?
-    ORDER BY u.full_name COLLATE NOCASE
-  `).all(school.id);
-
-  const today = todayStrServer();
-  const activeToday = students.filter(s => s.last_activity_date === today).length;
-  const avgStreak = students.length
-    ? Math.round(students.reduce((sum, s) => sum + s.current_streak, 0) / students.length * 10) / 10
-    : 0;
-
-  res.json({
-    school,
-    teachers,
-    students,
-    stats: { totalTeachers: teachers.length, totalStudents: students.length, activeToday, avgStreak }
-  });
-});
-
-app.get('/api/teacher/dashboard', auth.requireAuth, auth.requireRole('teacher'), (req, res) => {
-  const teacherRow = db.prepare('SELECT school_id FROM users WHERE id = ?').get(req.user.id);
-  const schoolId = teacherRow?.school_id;
-
-  if (!schoolId) {
-    return res.json({ school: null, students: [], stats: { totalStudents: 0, activeThisWeek: 0, avgPoints: 0, totalHomeworkSolved: 0 } });
-  }
-
-  const school = db.prepare('SELECT id, name FROM schools WHERE id = ?').get(schoolId);
-
-  const students = db.prepare(`
-    SELECT u.id, u.full_name, u.grade, u.email,
-           COALESCE(s.current_streak, 0) AS current_streak,
-           COALESCE(s.points, 0) AS points,
-           (SELECT COUNT(*) FROM activity_log a WHERE a.user_id = u.id) AS total_activity,
-           (SELECT COUNT(*) FROM activity_log a WHERE a.user_id = u.id AND a.mode = 'homework') AS homework_count,
-           (SELECT COUNT(*) FROM activity_log a WHERE a.user_id = u.id AND a.mode = 'questions') AS quiz_count,
-           (SELECT MAX(created_at) FROM activity_log a WHERE a.user_id = u.id) AS last_activity_at
-    FROM users u LEFT JOIN streaks s ON s.user_id = u.id
-    WHERE u.role = 'student' AND u.school_id = ?
-    ORDER BY u.full_name COLLATE NOCASE
-  `).all(schoolId);
-
-  const now = Date.now();
-  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-  let activeThisWeek = 0;
-  let totalHomeworkSolved = 0;
-
-  const studentsWithFlags = students.map(s => {
-    const lastMs = s.last_activity_at ? new Date(s.last_activity_at.replace(' ', 'T') + 'Z').getTime() : null;
-    const isActiveThisWeek = lastMs !== null && (now - lastMs) <= SEVEN_DAYS_MS;
-    if (isActiveThisWeek) activeThisWeek++;
-    totalHomeworkSolved += s.homework_count;
-    return { ...s, needsAttention: !isActiveThisWeek };
-  });
-
-  const avgPoints = students.length
-    ? Math.round(students.reduce((sum, s) => sum + s.points, 0) / students.length)
-    : 0;
-
-  res.json({
-    school,
-    students: studentsWithFlags,
-    stats: { totalStudents: students.length, activeThisWeek, avgPoints, totalHomeworkSolved }
-  });
 });
 
 // ──────────────────────────────────────────────────────────────
