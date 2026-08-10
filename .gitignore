@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment variables (فيها أسرار زي API keys و JWT secret)
+.env
+.env.local
+
+# Database (بيانات المستخدمين الحقيقية — متتحطش على GitHub)
+data.db
+data.db-journal
+data.db-wal
+data.db-shm
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

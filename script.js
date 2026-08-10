@@ -75,6 +75,37 @@ const ttsBtn          = document.getElementById('ttsBtn');
 const copyBtn         = document.getElementById('copyBtn');
 const toast           = document.getElementById('toast');
 const simpleToggle    = document.getElementById('simpleToggle');
+const a11yPanelOverlay = document.getElementById('a11yPanelOverlay');
+const a11yPanel        = document.getElementById('a11yPanel');
+const a11yPanelClose   = document.getElementById('a11yPanelClose');
+const a11yMasterToggle = document.getElementById('a11yMasterToggle');
+const a11yReadBtn      = document.getElementById('a11yReadBtn');
+const a11yStopBtn      = document.getElementById('a11yStopBtn');
+const a11yFontDown     = document.getElementById('a11yFontDown');
+const a11yFontReset    = document.getElementById('a11yFontReset');
+const a11yFontUp       = document.getElementById('a11yFontUp');
+const a11ySpeedSlow    = document.getElementById('a11ySpeedSlow');
+const a11ySpeedNormal  = document.getElementById('a11ySpeedNormal');
+const a11ySpeedFast    = document.getElementById('a11ySpeedFast');
+const a11yDyslexiaToggle  = document.getElementById('a11yDyslexiaToggle');
+const a11yGrayscaleToggle = document.getElementById('a11yGrayscaleToggle');
+const a11yCursorToggle    = document.getElementById('a11yCursorToggle');
+const a11yOpaqueToggle    = document.getElementById('a11yOpaqueToggle');
+const a11yRulerToggle     = document.getElementById('a11yRulerToggle');
+const a11yUnderlineToggle = document.getElementById('a11yUnderlineToggle');
+const a11yAutoReadToggle  = document.getElementById('a11yAutoReadToggle');
+const a11yVoiceCheckBtn    = document.getElementById('a11yVoiceCheckBtn');
+const a11yVoiceDiagResult  = document.getElementById('a11yVoiceDiagResult');
+const a11yVoicePickerWrap  = document.getElementById('a11yVoicePickerWrap');
+const a11yVoicePicker      = document.getElementById('a11yVoicePicker');
+const a11ySwitchScanToggle    = document.getElementById('a11ySwitchScanToggle');
+const a11yScanSlow            = document.getElementById('a11yScanSlow');
+const a11yScanNormal          = document.getElementById('a11yScanNormal');
+const a11yScanFast            = document.getElementById('a11yScanFast');
+const a11ySwitchScanIndicator = document.getElementById('a11ySwitchScanIndicator');
+const a11ySwitchScanStop      = document.getElementById('a11ySwitchScanStop');
+const a11yReadingRuler    = document.getElementById('a11yReadingRuler');
+const a11yResetAll        = document.getElementById('a11yResetAll');
 const simpleOverlay   = document.getElementById('simpleOverlay');
 const simpleClose     = document.getElementById('simpleClose');
 const simpleContent   = document.getElementById('simpleContent');
@@ -1303,10 +1334,10 @@ function setVoiceState(state) {
   voiceState = state;
   voiceMicBtn.classList.remove('listening', 'thinking', 'speaking');
   voiceMicBtn.disabled = false;
-  if (state === 'listening') { voiceMicBtn.classList.add('listening'); voiceStatus.textContent = '🎤 بسمعك… اتكلم دلوقتي'; }
-  else if (state === 'thinking') { voiceMicBtn.classList.add('thinking'); voiceMicBtn.disabled = true; voiceStatus.textContent = '🤔 بيفكر…'; }
-  else if (state === 'speaking') { voiceMicBtn.classList.add('speaking'); voiceStatus.textContent = '🔊 بيتكلم… اضغط للمقاطعة'; }
-  else { voiceStatus.textContent = 'اضغط للتكلم'; }
+  if (state === 'listening') { voiceMicBtn.classList.add('listening'); voiceStatus.textContent = '🎤 بسمعك… اتكلم دلوقتي'; voiceMicBtn.setAttribute('aria-label','جاري الاستماع، اضغط للإيقاف'); }
+  else if (state === 'thinking') { voiceMicBtn.classList.add('thinking'); voiceMicBtn.disabled = true; voiceStatus.textContent = '🤔 بيفكر…'; voiceMicBtn.setAttribute('aria-label','المعلم الذكي بيفكر في الرد'); }
+  else if (state === 'speaking') { voiceMicBtn.classList.add('speaking'); voiceStatus.textContent = '🔊 بيتكلم… اضغط للمقاطعة'; voiceMicBtn.setAttribute('aria-label','جاري الرد صوتيًا، اضغط للمقاطعة'); }
+  else { voiceStatus.textContent = 'اضغط للتكلم'; voiceMicBtn.setAttribute('aria-label','اضغط للتحدث'); }
 }
 
 function addVoiceBubble(role, text) {
@@ -1347,12 +1378,15 @@ async function sendVoiceMessage(transcript) {
   }
 }
 
-function speakVoiceAnswer(text) {
+async function speakVoiceAnswer(text) {
   if (!('speechSynthesis' in window)) { setVoiceState('idle'); return; }
   window.speechSynthesis.cancel();
+  await ensureVoicesLoaded();
+  const voice = pickVoice(voiceLang === 'en' ? 'en' : 'ar');
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = voiceLang === 'en' ? 'en-US' : 'ar-EG';
-  utter.rate = 1;
+  utter.lang = voice ? voice.lang : (voiceLang === 'en' ? 'en-US' : 'ar-EG');
+  if (voice) utter.voice = voice;
+  utter.rate = ttsRate;
   utter.onstart = () => setVoiceState('speaking');
   utter.onend = () => setVoiceState('idle');
   utter.onerror = () => setVoiceState('idle');
@@ -1435,17 +1469,79 @@ soonNotifyBtn.addEventListener('click', async () => {
 });
 
 // ── 7. TTS ─────────────────────────────────────────────────────
-function speak(text, btn) {
+// تحميل أصوات القراءة بشكل موثوق — المتصفح (خصوصًا Chrome) بيحمّلها متأخر ومرحلي
+// وأول Call لـ getVoices() ممكن يرجع فاضي أو ناقص، فبيقع بالغلط على صوت إنجليزي افتراضي
+let _voicesCache = [];
+let _voicesReadyPromise = null;
+function ensureVoicesLoaded() {
+  if (_voicesReadyPromise) return _voicesReadyPromise;
+  _voicesReadyPromise = new Promise(resolve => {
+    let settled = false;
+    const finish = (v) => { if(!settled){ settled=true; _voicesCache=v; resolve(v); } };
+    const tryNow = () => {
+      const v = window.speechSynthesis.getVoices();
+      if (v.length) { _voicesCache = v; return true; }
+      return false;
+    };
+    if (tryNow()) { finish(_voicesCache); return; }
+    window.speechSynthesis.onvoiceschanged = () => { if (tryNow()) finish(_voicesCache); };
+    // بعض المتصفحات بتحمّل القايمة على دفعات، فبنحاول كذا مرة بدل مرة واحدة بس
+    let attempts = 0;
+    const poll = setInterval(() => {
+      attempts++;
+      if (tryNow() || attempts >= 8) { clearInterval(poll); finish(_voicesCache); }
+    }, 350);
+  });
+  return _voicesReadyPromise;
+}
+// بيدوّر على أي صوت عربي مهما كان الاحتمال (لهجات مختلفة، أو حتى لو الاسم مكتوب "Arabic" من غير كود لغة صحيح)
+function pickVoice(langPrefix) {
+  const voices = _voicesCache.length ? _voicesCache : window.speechSynthesis.getVoices();
+  if (langPrefix === 'ar' && typeof a11yState !== 'undefined' && a11yState.manualVoiceURI) {
+    const manual = voices.find(v => v.voiceURI === a11yState.manualVoiceURI);
+    if (manual) return manual;
+  }
+  if (langPrefix !== 'ar') return voices.find(v => v.lang.toLowerCase().startsWith(langPrefix)) || null;
+  return voices.find(v => v.lang.toLowerCase() === 'ar-eg')
+    || voices.find(v => v.lang.toLowerCase().startsWith('ar'))
+    || voices.find(v => /arabic|عرب/i.test(v.name || ''))
+    || null;
+}
+function getAllArabicVoices() {
+  const voices = _voicesCache.length ? _voicesCache : window.speechSynthesis.getVoices();
+  return voices.filter(v => v.lang.toLowerCase().startsWith('ar') || /arabic|عرب/i.test(v.name || ''));
+}
+let ttsRate = 0.9; // سرعة القراءة الافتراضية، قابلة للتعديل من لوحة سهولة الوصول
+
+async function speak(text, btn) {
   if(!('speechSynthesis' in window)){showToast('المتصفح لا يدعم القراءة الصوتية','error');return;}
   if(isSpeaking){window.speechSynthesis.cancel();isSpeaking=false;if(btn)btn.classList.remove('active');return;}
   const clean=text.replace(/#+\s/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/[-•]/g,'').trim();
-  const u=new SpeechSynthesisUtterance(clean); u.lang='ar-EG'; u.rate=0.9; u.pitch=1;
-  const voices=window.speechSynthesis.getVoices();
-  const arVoice=voices.find(v=>v.lang.startsWith('ar')); if(arVoice) u.voice=arVoice;
+  await ensureVoicesLoaded();
+  const arVoice=pickVoice('ar');
+  const u=new SpeechSynthesisUtterance(clean); u.lang=arVoice?arVoice.lang:'ar-EG'; u.rate=ttsRate; u.pitch=1;
+  if(arVoice) u.voice=arVoice;
+  else { showNoArabicVoiceHelp(); }
   u.onstart=()=>{isSpeaking=true;if(btn)btn.classList.add('active');};
   u.onend=()=>{isSpeaking=false;if(btn)btn.classList.remove('active');};
   u.onerror=()=>{isSpeaking=false;if(btn)btn.classList.remove('active');};
   window.speechSynthesis.speak(u);
+}
+
+// جهاز المستخدم مفيهوش صوت عربي مثبّت على مستوى نظام التشغيل — ده قيد برّه سيطرة الموقع،
+// فبنوريه بالظبط إزاي يظبطها بدل ما نسيبه يسمع صوت إنجليزي بيقرا عربي من غير تفسير
+let _a11yVoiceHelpShown = false;
+function showNoArabicVoiceHelp() {
+  showToast('⚠️ جهازك مفيهوش صوت عربي — هيقرا بصوت التاني المتاح', 'error');
+  if (_a11yVoiceHelpShown) return;
+  _a11yVoiceHelpShown = true;
+  const ua = navigator.userAgent;
+  const isWin = /Windows/i.test(ua), isMac = /Macintosh/i.test(ua), isAndroid = /Android/i.test(ua);
+  let steps = 'من إعدادات نظام التشغيل، ضيف حزمة صوت عربي (Text-to-Speech) ثم أعد تحميل الصفحة.';
+  if (isWin) steps = 'الإعدادات ← الوقت واللغة ← اللغة والمنطقة ← أضف لغة "العربية" ← فعّل خاصية التحدث (Speech) الخاصة بيها، وبعدها أعد تحميل الصفحة.';
+  else if (isMac) steps = 'إعدادات النظام ← إمكانية الوصول ← المحتوى المنطوق ← اختار صوتًا عربيًا من قائمة النظام، وبعدها أعد تحميل الصفحة.';
+  else if (isAndroid) steps = 'إعدادات الجهاز ← إعدادات إضافية ← تحويل النص إلى كلام ← ثبّت بيانات اللغة العربية.';
+  showToast(steps, '');
 }
 
 ttsBtn.addEventListener('click', ()=>speak(lastResponse,ttsBtn));
@@ -1522,6 +1618,7 @@ async function askAI(mode) {
     setUIState('response');
     recordStreakActivity();
     if(isSimpleMode) openSimpleMode(lastResponse);
+    if(a11yState.autoRead && lastResponse) speak(lastResponse, a11yReadBtn);
   } catch(err) {
     errorMsg.textContent=err.message||'حدث خطأ في الاتصال بالخادم.';
     setUIState('error');
@@ -1550,6 +1647,7 @@ function renderQuiz(quiz) {
           <label class="quiz-option">
             <input type="radio" name="quiz-q${qi}" value="${oi}">
             <span class="quiz-option-text">${escapeHtml(opt)}</span>
+            <span class="quiz-option-icon" aria-hidden="true"></span>
           </label>`).join('')}
       </div>
       <div class="quiz-explanation hidden"></div>
@@ -1592,15 +1690,17 @@ function gradeQuiz(quiz) {
     const options = block.querySelectorAll('.quiz-option');
     options.forEach((optEl, oi) => {
       optEl.classList.add('answered');
-      if (oi === q.correctIndex) optEl.classList.add('correct');
-      else if (oi === selectedIndex) optEl.classList.add('incorrect');
+      const iconEl = optEl.querySelector('.quiz-option-icon');
+      if (oi === q.correctIndex) { optEl.classList.add('correct'); iconEl.textContent = '✓'; }
+      else if (oi === selectedIndex) { optEl.classList.add('incorrect'); iconEl.textContent = '✗'; }
       optEl.querySelector('input').disabled = true;
     });
 
     const explanationEl = block.querySelector('.quiz-explanation');
-    explanationEl.textContent = `💡 ${q.explanation || ''}`;
+    explanationEl.textContent = `${isCorrect ? '✅ إجابة صحيحة —' : '❌ إجابة غير صحيحة —'} ${q.explanation || ''}`;
     explanationEl.classList.remove('hidden');
     explanationEl.classList.add(isCorrect ? 'correct-exp' : 'incorrect-exp');
+    explanationEl.setAttribute('role', 'status');
   });
 
   const submitBtn = document.getElementById('quizSubmitBtn');
@@ -1612,6 +1712,8 @@ function gradeQuiz(quiz) {
   const face = pct >= 80 ? '🌟' : pct >= 50 ? '💪' : '📚';
   resultEl.innerHTML = `<div class="quiz-score-chip">${face} نتيجتك: ${score}/${total}</div>`;
   resultEl.classList.remove('hidden');
+  resultEl.setAttribute('role', 'status');
+  resultEl.setAttribute('aria-live', 'polite');
 
   if (currentUser) {
     fetch('/api/quiz/submit-score', {
@@ -1678,11 +1780,255 @@ homeworkBtn.addEventListener('click', ()=>askAI('homework'));
 quizBtn.addEventListener('click', ()=>askAI('quiz'));
 retryBtn.addEventListener('click', ()=>{ if(retryPayload) askAI(retryPayload.mode); });
 
-// ── 13. SIMPLE MODE ────────────────────────────────────────────
-simpleToggle.addEventListener('click', ()=>{
-  isSimpleMode=!isSimpleMode; simpleToggle.classList.toggle('active',isSimpleMode);
-  showToast(isSimpleMode?'🧩 الوضع المبسّط مفعّل':'الوضع المبسّط مُعطَّل','success');
-  if(isSimpleMode && lastResponse) openSimpleMode(lastResponse);
+// ── 13. لوحة سهولة الوصول الشاملة ────────────────────────────────
+const A11Y_KEY = 'aiTeacherA11ySettings';
+const FONT_LEVELS = [null, 'a11y-font-lg', 'a11y-font-xl']; // 0=عادي 1=كبير 2=أكبر
+let a11yState = { master:false, fontLevel:0, speed:'normal', dyslexia:false, grayscale:false, cursor:false, opaque:false, ruler:false, underline:false, autoRead:false, manualVoiceURI:null, switchScan:false };
+
+function loadA11yState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(A11Y_KEY) || '{}');
+    a11yState = { ...a11yState, ...saved };
+  } catch {}
+}
+function saveA11yState() {
+  try { localStorage.setItem(A11Y_KEY, JSON.stringify(a11yState)); } catch {}
+}
+function setSwitch(btn, on) { btn.setAttribute('aria-checked', on ? 'true' : 'false'); }
+
+function applyA11yState() {
+  const html = document.documentElement;
+  html.classList.toggle('a11y-mode', a11yState.master);
+  FONT_LEVELS.forEach(cls => { if (cls) html.classList.remove(cls); });
+  if (FONT_LEVELS[a11yState.fontLevel]) html.classList.add(FONT_LEVELS[a11yState.fontLevel]);
+  html.classList.toggle('a11y-dyslexia', a11yState.dyslexia);
+  html.classList.toggle('a11y-grayscale', a11yState.grayscale);
+  html.classList.toggle('a11y-big-cursor', a11yState.cursor);
+  html.classList.toggle('a11y-opaque', a11yState.opaque);
+  html.classList.toggle('a11y-underline', a11yState.underline);
+  ttsRate = a11yState.speed === 'slow' ? 0.65 : a11yState.speed === 'fast' ? 1.25 : 0.9;
+
+  setSwitch(a11yMasterToggle, a11yState.master);
+  setSwitch(a11yDyslexiaToggle, a11yState.dyslexia);
+  setSwitch(a11yGrayscaleToggle, a11yState.grayscale);
+  setSwitch(a11yCursorToggle, a11yState.cursor);
+  setSwitch(a11yOpaqueToggle, a11yState.opaque);
+  setSwitch(a11yRulerToggle, a11yState.ruler);
+  setSwitch(a11yUnderlineToggle, a11yState.underline);
+  setSwitch(a11yAutoReadToggle, a11yState.autoRead);
+  setSwitch(a11ySwitchScanToggle, a11yState.switchScan);
+  simpleToggle.classList.toggle('active', a11yState.master);
+  simpleToggle.setAttribute('aria-pressed', a11yState.master ? 'true' : 'false');
+  [a11ySpeedSlow,a11ySpeedNormal,a11ySpeedFast].forEach(b=>b.classList.remove('active'));
+  ({slow:a11ySpeedSlow,normal:a11ySpeedNormal,fast:a11ySpeedFast}[a11yState.speed]||a11ySpeedNormal).classList.add('active');
+
+  toggleReadingRuler(a11yState.ruler);
+  if (a11yState.switchScan && !switchScan.active) startSwitchScan();
+  else if (!a11yState.switchScan && switchScan.active) stopSwitchScan();
+}
+
+// ── وضع المسح بمفتاح واحد (Single-Switch Scanning Access) ──────
+// أداة مساعدة احترافية لذوي الإعاقة الحركية الشديدة اللي مقدرش يستخدموا
+// ماوس أو كيبورد عادي — كل عناصر الصفحة بتضيء أوتوماتيك واحد واحد بالدور،
+// وضغطة واحدة بس (مسافة أو نقرة في أي مكان) بتفعّل اللي مضيء دلوقتي.
+const switchScan = { active:false, elements:[], index:-1, timer:null, speedMs:2000 };
+
+function getScannableElements() {
+  const sel = 'button:not([disabled]), a[href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), [role="switch"]';
+  return Array.from(document.querySelectorAll(sel)).filter(el => {
+    if (el.closest('.a11y-switch-scan-indicator')) return false; // متضيئش شريط المسح نفسه
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return false;
+    const style = window.getComputedStyle(el);
+    if (style.visibility === 'hidden' || style.display === 'none') return false;
+    if (el.closest('.hidden')) return false;
+    const overlayParent = el.closest('.auth-overlay,.voice-overlay,.simple-overlay,.streak-celebrate-overlay,.a11y-panel-overlay');
+    if (overlayParent && overlayParent.classList.contains('hidden')) return false;
+    return true;
+  });
+}
+
+function clearScanHighlight() {
+  const cur = switchScan.elements[switchScan.index];
+  if (cur) cur.classList.remove('switch-scan-highlight');
+}
+
+function advanceScan() {
+  clearScanHighlight();
+  switchScan.elements = getScannableElements(); // نعيد الفحص كل مرة لأن محتوى الصفحة ممكن يتغيّر
+  if (!switchScan.elements.length) return;
+  switchScan.index = (switchScan.index + 1) % switchScan.elements.length;
+  const el = switchScan.elements[switchScan.index];
+  el.classList.add('switch-scan-highlight');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+function activateScanElement() {
+  const el = switchScan.elements[switchScan.index];
+  if (!el) return;
+  clearScanHighlight();
+  el.click();
+  // نديله فرصة صغيرة إن أي نافذة/تبويب جديد يفتح قبل ما نكمّل المسح فيه
+  setTimeout(advanceScan, 400);
+}
+
+function startSwitchScan() {
+  switchScan.active = true;
+  switchScan.index = -1;
+  a11ySwitchScanIndicator.classList.remove('hidden');
+  advanceScan();
+  switchScan.timer = setInterval(advanceScan, switchScan.speedMs);
+}
+function stopSwitchScan() {
+  switchScan.active = false;
+  clearInterval(switchScan.timer);
+  clearScanHighlight();
+  a11ySwitchScanIndicator.classList.add('hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!switchScan.active) return;
+  if (e.code === 'Space' || e.key === 'Enter') { e.preventDefault(); activateScanElement(); }
+});
+document.addEventListener('click', (e) => {
+  if (!switchScan.active) return;
+  if (e.target.closest('.a11y-switch-scan-indicator')) return; // زرار الإيقاف له تصرفه الطبيعي
+  if (e.target === switchScan.elements[switchScan.index]) return; // نقر مباشر على العنصر نفسه، سيبه يشتغل عادي
+  e.preventDefault();
+  activateScanElement();
+}, true);
+
+a11ySwitchScanToggle.addEventListener('click', () => {
+  a11yState.switchScan = !a11yState.switchScan;
+  setSwitch(a11ySwitchScanToggle, a11yState.switchScan);
+  saveA11yState();
+  if (a11yState.switchScan) { startSwitchScan(); showToast('🔘 وضع المسح بمفتاح واحد شغّال — دوس مسافة للاختيار', 'success'); }
+  else stopSwitchScan();
+});
+a11ySwitchScanStop.addEventListener('click', () => { a11yState.switchScan = false; setSwitch(a11ySwitchScanToggle, false); saveA11yState(); stopSwitchScan(); });
+
+function setScanSpeed(ms, btn) {
+  switchScan.speedMs = ms;
+  [a11yScanSlow, a11yScanNormal, a11yScanFast].forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (switchScan.active) { clearInterval(switchScan.timer); switchScan.timer = setInterval(advanceScan, ms); }
+}
+a11yScanSlow.addEventListener('click', () => setScanSpeed(3200, a11yScanSlow));
+a11yScanNormal.addEventListener('click', () => setScanSpeed(2000, a11yScanNormal));
+a11yScanFast.addEventListener('click', () => setScanSpeed(1100, a11yScanFast));
+
+loadA11yState();
+applyA11yState();
+isSimpleMode = a11yState.master; // التوافق مع منطق "الوضع المبسّط" الأصلي لعرض إجابات الـ AI
+
+simpleToggle.addEventListener('click', ()=>{ a11yPanelOverlay.classList.toggle('hidden'); });
+a11yPanelClose.addEventListener('click', ()=> a11yPanelOverlay.classList.add('hidden'));
+a11yPanelOverlay.addEventListener('click', (e)=>{ if(e.target===a11yPanelOverlay) a11yPanelOverlay.classList.add('hidden'); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && !a11yPanelOverlay.classList.contains('hidden')) a11yPanelOverlay.classList.add('hidden'); });
+
+// قفل التنقل بالتاب جوه اللوحة بس وهي مفتوحة، ونقل التركيز لها فورًا — يضمن إنك تقدر توصل لزرار الإغلاق دايمًا
+const a11yPanelObserver = new MutationObserver(() => {
+  if (!a11yPanelOverlay.classList.contains('hidden')) {
+    requestAnimationFrame(() => a11yPanelClose.focus());
+  }
+});
+a11yPanelObserver.observe(a11yPanelOverlay, { attributes: true, attributeFilter: ['class'] });
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab' || a11yPanelOverlay.classList.contains('hidden')) return;
+  const focusables = a11yPanel.querySelectorAll('button, [href], input, select, [tabindex]:not([tabindex="-1"])');
+  if (!focusables.length) return;
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+a11yMasterToggle.addEventListener('click', ()=>{
+  a11yState.master = !a11yState.master; isSimpleMode = a11yState.master;
+  applyA11yState(); saveA11yState();
+  showToast(a11yState.master?'♿ وضع سهولة الوصول الشامل مفعّل':'تم تعطيل الوضع الشامل','success');
+  if (isSimpleMode && lastResponse) openSimpleMode(lastResponse);
+});
+a11yDyslexiaToggle.addEventListener('click', ()=>{ a11yState.dyslexia=!a11yState.dyslexia; applyA11yState(); saveA11yState(); });
+a11yGrayscaleToggle.addEventListener('click', ()=>{ a11yState.grayscale=!a11yState.grayscale; applyA11yState(); saveA11yState(); });
+a11yCursorToggle.addEventListener('click', ()=>{ a11yState.cursor=!a11yState.cursor; applyA11yState(); saveA11yState(); });
+a11yOpaqueToggle.addEventListener('click', ()=>{ a11yState.opaque=!a11yState.opaque; applyA11yState(); saveA11yState(); });
+a11yRulerToggle.addEventListener('click', ()=>{ a11yState.ruler=!a11yState.ruler; applyA11yState(); saveA11yState(); });
+a11yUnderlineToggle.addEventListener('click', ()=>{ a11yState.underline=!a11yState.underline; applyA11yState(); saveA11yState(); });
+a11yAutoReadToggle.addEventListener('click', ()=>{ a11yState.autoRead=!a11yState.autoRead; applyA11yState(); saveA11yState(); });
+
+a11yVoiceCheckBtn.addEventListener('click', async () => {
+  a11yVoiceCheckBtn.textContent = '⏳ بيفحص…';
+  await ensureVoicesLoaded();
+  const arVoices = getAllArabicVoices();
+  a11yVoiceCheckBtn.textContent = '🔍 فحص الصوت العربي المتاح على جهازك';
+  a11yVoiceDiagResult.classList.remove('hidden', 'ok', 'warn');
+
+  if (arVoices.length === 0) {
+    a11yVoiceDiagResult.classList.add('warn');
+    a11yVoiceDiagResult.textContent = '❌ مفيش أي صوت عربي متاح على جهازك دلوقتي. لازم تضيف صوت عربي من إعدادات نظام التشغيل (الوقت واللغة ← الكلام، على ويندوز مثلًا)، وبعدين رجّع افتح الصفحة تاني.';
+    a11yVoicePickerWrap.classList.add('hidden');
+  } else {
+    a11yVoiceDiagResult.classList.add('ok');
+    a11yVoiceDiagResult.textContent = `✅ لقينا ${arVoices.length} صوت عربي على جهازك. اختار اللي عايزه من القائمة تحت لو حابب تحدد صوت بعينه:`;
+    a11yVoicePicker.innerHTML = arVoices.map(v => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('');
+    if (a11yState.manualVoiceURI) a11yVoicePicker.value = a11yState.manualVoiceURI;
+    a11yVoicePickerWrap.classList.remove('hidden');
+  }
+});
+
+a11yVoicePicker.addEventListener('change', () => {
+  a11yState.manualVoiceURI = a11yVoicePicker.value || null;
+  saveA11yState();
+  showToast('✅ تم اختيار الصوت، جرّب زرار القراءة دلوقتي', 'success');
+});
+
+a11yFontUp.addEventListener('click', ()=>{ a11yState.fontLevel=Math.min(2,a11yState.fontLevel+1); applyA11yState(); saveA11yState(); });
+a11yFontDown.addEventListener('click', ()=>{ a11yState.fontLevel=Math.max(0,a11yState.fontLevel-1); applyA11yState(); saveA11yState(); });
+a11yFontReset.addEventListener('click', ()=>{ a11yState.fontLevel=0; applyA11yState(); saveA11yState(); });
+
+a11ySpeedSlow.addEventListener('click', ()=>{ a11yState.speed='slow'; applyA11yState(); saveA11yState(); });
+a11ySpeedNormal.addEventListener('click', ()=>{ a11yState.speed='normal'; applyA11yState(); saveA11yState(); });
+a11ySpeedFast.addEventListener('click', ()=>{ a11yState.speed='fast'; applyA11yState(); saveA11yState(); });
+
+
+a11yResetAll.addEventListener('click', ()=>{
+  a11yState = { master:false, fontLevel:0, speed:'normal', dyslexia:false, grayscale:false, cursor:false, opaque:false, ruler:false, underline:false, autoRead:false, manualVoiceURI:null, switchScan:false };
+  isSimpleMode = false;
+  applyA11yState(); saveA11yState();
+  a11yVoiceDiagResult.classList.add('hidden');
+  a11yVoicePickerWrap.classList.add('hidden');
+  showToast('↺ تم إرجاع كل إعدادات سهولة الوصول للوضع الافتراضي','');
+});
+
+// مسطرة تتبّع القراءة — بتتحرك مع الماوس ولوحة المفاتيح (تفيد عسر القراءة وصعوبات التركيز)
+function toggleReadingRuler(on) {
+  a11yReadingRuler.classList.toggle('hidden', !on);
+  if (on) document.addEventListener('mousemove', moveReadingRuler);
+  else document.removeEventListener('mousemove', moveReadingRuler);
+}
+function moveReadingRuler(e) {
+  a11yReadingRuler.style.top = (e.clientY - 19) + 'px';
+}
+
+function getReadablePageText() {
+  const activePanel = document.querySelector('.tab-panel.active');
+  if (!activePanel) return '';
+  // نتجاهل عناصر الإدخال والأزرار المكررة، ونركّز على النص الفعلي المقروء
+  const clone = activePanel.cloneNode(true);
+  clone.querySelectorAll('input,select,textarea,svg,button').forEach(el => el.remove());
+  return clone.textContent.replace(/\s+/g, ' ').trim().slice(0, 3000);
+}
+
+a11yReadBtn.addEventListener('click', () => {
+  const text = getReadablePageText();
+  if (!text) { showToast('مفيش محتوى نصي هنا للقراءة', ''); return; }
+  speak(text, a11yReadBtn);
+});
+a11yStopBtn.addEventListener('click', () => {
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  isSpeaking = false;
+  a11yReadBtn.classList.remove('active');
 });
 
 simpleClose.addEventListener('click', ()=>{ simpleOverlay.classList.add('hidden'); window.speechSynthesis&&window.speechSynthesis.cancel(); isSpeaking=false; });
@@ -1736,5 +2082,5 @@ document.addEventListener('keydown', e=>{
 
 // ── 17. INIT ──────────────────────────────────────────────────
 setUIState('empty');
-if('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+if('speechSynthesis' in window) ensureVoicesLoaded(); // نبدأ تحميل الأصوات بدري من فتح الصفحة
 console.log('%c 🎓 AI Teacher Hub – قادة مدارس الجمهورية ','background:#2552be;color:#fff;font-size:14px;padding:8px 16px;border-radius:8px;');
