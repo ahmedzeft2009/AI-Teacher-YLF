@@ -1,62 +1,88 @@
-const { createClient } = require('@supabase/supabase-js');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const supabaseUrl = 'https://ssdwggwkjwyioeszfdoy.supabase.co';
-const supabaseKey = 'sb_publishable_t1-Jy1tcY4yhUGSUzrvoqQ_BQF_74sP';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const dbPath = path.resolve(__dirname, 'database.sqlite');
+const dbInstance = new sqlite3.Database(dbPath);
 
-// محاكي متصل حقيقي بـ Supabase لجدول users عشان التسجيل والدخول يشتغلوا 100%
-const db = {
-  prepare: (query) => {
-    const cleanQuery = query.trim().toLowerCase();
+// إنشاء الجدول بالأعمدة كاملة وصحيحة
+dbInstance.run(`CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  full_name TEXT,
+  email TEXT,
+  password_hash TEXT,
+  role TEXT,
+  grade TEXT,
+  school_id TEXT
+)`);
 
-    return {
-      run: async (...params) => {
-        console.log('Supabase SQL Run:', query, params);
-        
-        // لو أمر إدخال مستخدم جديد (Register)
-        if (cleanQuery.includes('insert into users')) {
-          // params بيكونوا ترتيبهم حسب استعلام السيرفر: [email, password_hash, full_name, role, grade, school_id]
-          const [email, password_hash, full_name, role, grade, school_id] = params;
-          const { error } = await supabase
-            .from('users')
-            .insert([{ email, password_hash, full_name, role, grade, school_id }]);
-          
-          if (error) {
-            console.error('Supabase Insert Error:', error);
-            throw new Error(error.message);
+const createQueryBuilder = (tableName) => {
+  let selectedFields = '*';
+  let whereField = null;
+  let whereVal = null;
+
+  return {
+    select: (fields = '*') => {
+      selectedFields = fields;
+      return createQueryBuilder(tableName);
+    },
+    eq: (field, val) => {
+      whereField = field;
+      whereVal = val;
+      return createQueryBuilder(tableName);
+    },
+    insert: async (dataArray) => {
+      const data = Array.isArray(dataArray) ? dataArray[0] : dataArray;
+      const keys = Object.keys(data);
+      const values = Object.values(data);
+      const placeholders = keys.map(() => '?').join(',');
+      const query = `INSERT INTO ${tableName} (${keys.join(',')}) VALUES (${placeholders})`;
+      
+      return new Promise((resolve) => {
+        dbInstance.run(query, values, function(err) {
+          if (err) {
+            console.error('SQLite Insert Error:', err.message);
+            resolve({ data: null, error: err });
+          } else {
+            resolve({ data: [{ id: this.lastID, ...data }], error: null });
           }
-          return { changes: 1 };
-        }
-        return { changes: 1 };
-      },
+        });
+      });
+    },
+    single: async () => {
+      return executeQuery();
+    },
+    maybeSingle: async () => {
+      return executeQuery();
+    }
+  };
 
-      get: async (...params) => {
-        console.log('Supabase SQL Get:', query, params);
-        
-        // لو أمر بحث عن مستخدم بالإيميل (للlogin أو التأكد لو الإيميل موجود)
-        if (cleanQuery.includes('select') && cleanQuery.includes('users') && cleanQuery.includes('email')) {
-          const email = params[0];
-          const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', email)
-            .single();
-          
-          if (error || !data) return null;
-          return data; // بيرجع بيانات المستخدم الحقيقية
-        }
-        return null;
-      },
+  async function executeQuery() {
+    let query = `SELECT ${selectedFields} FROM ${tableName}`;
+    let params = [];
+    if (whereField) {
+      query += ` WHERE ${whereField} = ?`;
+      params.push(whereVal);
+    }
 
-      all: async (...params) => {
-        console.log('Supabase SQL All:', query, params);
-        return [];
-      }
-    };
-  },
-  pragma: () => [],
-  exec: () => {},
-  supabase: supabase 
+    return new Promise((resolve) => {
+      dbInstance.get(query, params, (err, row) => {
+        if (err) resolve({ data: null, error: err });
+        else resolve({ data: row || null, error: null });
+      });
+    });
+  }
+};
+
+const db = {
+  from: (tableName) => createQueryBuilder(tableName),
+  prepare: (query) => ({
+    run: (...p) => dbInstance.run(query, p),
+    get: (...p) => dbInstance.get(query, p),
+    all: (...p) => dbInstance.all(query, p)
+  }),
+  supabase: {
+    from: (tableName) => createQueryBuilder(tableName)
+  }
 };
 
 module.exports = db;

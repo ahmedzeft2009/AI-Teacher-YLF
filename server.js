@@ -118,15 +118,11 @@ app.post('/api/auth/register', async (req, res) => {
     }
   }
 
-  try {
-    const supabase = db.supabase; // الاتصال الحقيقي بـ Supabase من ملف db.js
-
-    // 1. التأكد هل الإيميل موجود مسبقاً؟
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', cleanEmail)
-      .maybeSingle();
+try {
+    // الاتصال بقاعدة البيانات المحلية عبر db
+    // 1. التأكد هل الإيميل موجود مسبقاً بطريقة آمنة
+    const checkQuery = `SELECT id FROM users WHERE email = ?`;
+    const existingUser = await db.prepare(checkQuery).get(cleanEmail);
 
     if (existingUser) {
       return res.status(409).json({ error: 'الإيميل ده متسجّل بحساب قبل كده' });
@@ -135,51 +131,38 @@ app.post('/api/auth/register', async (req, res) => {
     // 2. تشفير الباسورد
     const password_hash = await auth.hashPassword(password);
 
-    // 3. إدخال المستخدم الجديد في Supabase
-    const { data: newUser, error: insertError } = await supabase
-      .from('users')
-      .insert([{
-        email: cleanEmail,
-        password_hash,
-        full_name: cleanName,
-        role,
-        grade: cleanGrade,
-        school_id: school_id ? Number(school_id) : null
-      }])
-      .select('id, email, full_name, role')
-      .single();
+    // 3. إدخال المستخدم الجديد في SQLite المحلي
+    const insertQuery = `INSERT INTO users (email, password_hash, full_name, role, grade, school_id) VALUES (?, ?, ?, ?, ?, ?)`;
+    const insertResult = await db.prepare(insertQuery).run(
+      cleanEmail, 
+      password_hash, 
+      cleanName, 
+      role, 
+      cleanGrade, 
+      school_id ? Number(school_id) : null
+    );
 
-    if (insertError || !newUser) {
-      console.error('Supabase Insert Error:', insertError);
-      return res.status(500).json({ error: 'حصل خطأ أثناء إنشاء الحساب' });
+    const userId = insertResult.lastID;
+    const newUser = { id: userId, email: cleanEmail, full_name: cleanName, role };
+
+    // 4. لو مسؤول مدرسة
+    if (role === 'school_admin' && cleanSchoolName) {
+      const schoolQuery = `INSERT INTO schools (name, admin_user_id) VALUES (?, ?)`;
+      const schoolResult = await db.prepare(schoolQuery).run(cleanSchoolName, userId);
+      const schoolId = schoolResult.lastID;
+
+      const updateQuery = `UPDATE users SET school_id = ? WHERE id = ?`;
+      await db.prepare(updateQuery).run(schoolId, userId);
     }
 
-    const userId = newUser.id;
-
-    // 4. لو مسؤول مدرسة، بننشئ المدرسة ونربطها بيه
-    if (role === 'school_admin') {
-      const { data: newSchool } = await supabase
-        .from('schools')
-        .insert([{ name: cleanSchoolName, admin_user_id: userId }])
-        .select('id')
-        .single();
-
-      if (newSchool) {
-        await supabase
-          .from('users')
-          .update({ school_id: newSchool.id })
-          .eq('id', userId);
-      }
-    }
-
-    // 5. إنشاء التوكن وتسجيل الدخول بالكويكي
+    // 5. إنشاء التوكن وتسجيل الدخول
     const token = auth.signToken(newUser);
     auth.setAuthCookie(res, token);
 
     return res.status(201).json({ user: newUser });
   } catch (err) {
     console.error('Register Exception:', err);
-    return res.status(500).json({ error: 'حصل خطأ غير متوقع أثناء التسجيل' });
+    return res.status(500).json({ error: 'حصل خطأ غير متوقع أثناء التسجيل: ' + err.message });
   }
 });
 
